@@ -1,35 +1,21 @@
 package org.ues21.taed2.estructura;
 
+import org.ues21.taed2.estructura.Nodo.NodoAVL;
+
 /**
  * @author grupo02
  *
  */
-public class ArbolAVL implements IEstructuraDeDatos {
+public class ArbolAVL<T> extends ArbolBinarioDeBusqueda<T> {
 
 	@Override
-	public String buscar(Integer codigoBusqueda) {
-		return "dummy result";
-	}
-
-	@Override
-	public void insertar(Integer codigo, String texto) {
-		// TODO Auto-generated method stub
-
+	public void insertar(T datos) {
+		NodoAVL<T> nuevoNodo = new NodoAVL<>();
+		nuevoNodo.setDatos(datos);
 	}
 
 	@Override
 	public TipoEstructura getTipoEstructura() {
-		return TipoEstructura.TABLA_HASH;
+		return TipoEstructura.AAVL;
 	}
-
-	/**
-	 * Representa un nodo para un arbol avl
-	 * 
-	 * @author grupo02
-	 *
-	 */
-	private static class NodoAVL {
-
-	}
-
 }

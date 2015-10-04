@@ -1,37 +1,29 @@
 package org.ues21.taed2.estructura;
 
+import org.ues21.taed2.estructura.Nodo.NodoArbol;
+
 /**
  * @author grupo02
  *
  */
-public class ArbolBinarioDeBusqueda implements IEstructuraDeDatos {
+public class ArbolBinarioDeBusqueda<T> implements IEstructuraDeDatos<T> {
 
 	@Override
-	public String buscar(Integer codigoBusqueda) {
-		return "dummy result";
+	public T buscar(Integer codigoBusqueda) {
+		NodoArbol<T> resultado = new NodoArbol<>();
+		return resultado.getDatos();
 	}
 
 	@Override
-	public void insertar(Integer codigo, String texto) {
-		// TODO Auto-generated method stub
-
+	public void insertar(T datos) {
+		NodoArbol<T> nuevoNodo = new NodoArbol<>();
+		nuevoNodo.setDatos(datos);
 	}
 
 	@Override
 	public TipoEstructura getTipoEstructura() {
 		return TipoEstructura.ABB;
 	}
-	
-	/**
-	 * Representa un nodo para un arbol binario
-	 * 
-	 * @author grupo02
-	 *
-	 */
-	private static class NodoABB {
-
-	}
-
 }
 
 

@@ -28,7 +28,7 @@ public final class GestorCSV {
 	 *            el path completo al archivo que sera cargado
 	 * @return el tiempo en milisegundos de toda la carga
 	 */
-	public static Long cargar(IEstructuraDeDatos estructuraDeDatos, String fullPathArchivo) {
+	public static Long cargar(IEstructuraDeDatos<Registro> estructuraDeDatos, String fullPathArchivo) {
 		Long tiempoTotalCarga = null;
 		Long tiempoInicio = System.currentTimeMillis();
 		Path file = Paths.get(fullPathArchivo);
@@ -39,7 +39,7 @@ public final class GestorCSV {
 			while (scanner.hasNextLine()) {
 
 				campos = scanner.nextLine().split(",");
-				estructuraDeDatos.insertar(new Integer(campos[0]), campos[1]);
+				estructuraDeDatos.insertar(new Registro(new Integer(campos[0]), campos[1]));
 			}
 			System.out.println("\t" + estructuraDeDatos.getTipoEstructura() + " =====> carga exitosa");
 		} catch (IOException ex) {
@@ -65,7 +65,7 @@ public final class GestorCSV {
 	 *            consultas
 	 * @return el tiempo en milisegundos de toda la consulta
 	 */
-	public static Long consultar(IEstructuraDeDatos estructuraDeDatos, String fullPathArchivo) {
+	public static Long consultar(IEstructuraDeDatos<Registro> estructuraDeDatos, String fullPathArchivo) {
 		Long tiempoTotalConsulta = null;
 		Long tiempoInicio = System.currentTimeMillis();
 		Path file = Paths.get(fullPathArchivo);
@@ -78,8 +78,8 @@ public final class GestorCSV {
 			while (scanner.hasNextLine()) {
 				campos = scanner.nextLine().split(",");
 				Integer codigoBusqueda = new Integer(campos[0]);
-				String resultadoBusqueda = estructuraDeDatos.buscar(codigoBusqueda);
-				System.out.println("\tCodigo: " + codigoBusqueda + "\t\tResultado: " + resultadoBusqueda);
+				Registro resultado = estructuraDeDatos.buscar(codigoBusqueda);
+				System.out.println(resultado);
 			}
 		} catch (IOException ex) {
 			System.err.println("Ocurrio una excepcion al procesar el archivo: " + ex.getMessage());
@@ -92,5 +92,39 @@ public final class GestorCSV {
 		}
 		return tiempoTotalConsulta;
 	}
-
+	
+	/**
+	 * Representa a un registro leido desde un archivo cvs con dos campos
+	 * @author grupo02
+	 *
+	 */
+	public static class Registro {
+		private Integer codigo;
+		private String nombreCompleto;
+		
+		public Registro(Integer codigo, String nombreCompleto) {
+			this.codigo = codigo;
+			this.nombreCompleto = nombreCompleto;
+		}
+		public Integer getCodigo() {
+			return codigo;
+		}
+		public void setCodigo(Integer codigo) {
+			this.codigo = codigo;
+		}
+		public String getNombreCompleto() {
+			return nombreCompleto;
+		}
+		public void setNombreCompleto(String nombreCompleto) {
+			this.nombreCompleto = nombreCompleto;
+		}
+		
+		@Override
+		public String toString() {
+			StringBuilder sb = new StringBuilder();
+			sb.append("\tCodigo: " + codigo);
+			sb.append("\t\tNombre completo: " + nombreCompleto);
+			return super.toString();
+		}
+	}
 }

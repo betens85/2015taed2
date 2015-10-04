@@ -6,7 +6,7 @@ package org.ues21.taed2.estructura;
  * @author grupo02
  *
  */
-public interface IEstructuraDeDatos {
+public interface IEstructuraDeDatos<T> {
 
 	/**
 	 * Permite la busqueda de informacion a partir de un codigo de busqueda
@@ -15,17 +15,15 @@ public interface IEstructuraDeDatos {
 	 *            el codigo de busqueda
 	 * @return el resultado de la busqueda
 	 */
-	String buscar(Integer codigoBusqueda);
+	T buscar(Integer codigoBusqueda);
 
 	/**
 	 * Permite la insercion de informacion en una estructura de datos
 	 * 
-	 * @param codigo
-	 *            el codigo a ser insertado
-	 * @param texto
-	 *            el texto a ser insertado
+	 * @param datos
+	 *            los datos de la entidad a ser insertada
 	 */
-	void insertar(Integer codigo, String texto);
+	void insertar(T datos);
 
 	/**
 	 * Devuelve el tipo de estructura
@@ -84,7 +82,5 @@ public interface IEstructuraDeDatos {
 		public void setTiempoConsulta(Long tiempoConsulta) {
 			this.tiempoConsulta = tiempoConsulta;
 		}
-
 	}
-
 }

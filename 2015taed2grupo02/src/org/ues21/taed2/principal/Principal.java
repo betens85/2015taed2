@@ -17,6 +17,7 @@ import org.ues21.taed2.estructura.IEstructuraDeDatos.Metricas;
 import org.ues21.taed2.estructura.IEstructuraDeDatos.TipoEstructura;
 import org.ues21.taed2.estructura.ListaDobleEnlazada;
 import org.ues21.taed2.estructura.TablaHash;
+import org.ues21.taed2.principal.GestorCSV.Registro;
 
 /**
  * Clase que representa el menu principal y sus operaciones
@@ -27,7 +28,7 @@ import org.ues21.taed2.estructura.TablaHash;
 public class Principal {
 
 	private static Map<TipoEstructura, Metricas> mapaMetricas = new HashMap<>();
-	private static List<IEstructuraDeDatos> estructurasDeDatos = new ArrayList<>();
+	private static List<IEstructuraDeDatos<Registro>> estructurasDeDatos = new ArrayList<>();
 	private static String pathDirectorio = "/home/norberto/taed2";
 
 	public static void main(String[] args) {
@@ -104,10 +105,10 @@ public class Principal {
 
 	private static void inicializarEstructuras() {
 		estructurasDeDatos.clear();
-		estructurasDeDatos.add(new ListaDobleEnlazada());
-		estructurasDeDatos.add(new TablaHash());
-		estructurasDeDatos.add(new ArbolBinarioDeBusqueda());
-		estructurasDeDatos.add(new ArbolAVL());
+		estructurasDeDatos.add(new ListaDobleEnlazada<Registro>());
+		estructurasDeDatos.add(new TablaHash<Registro>());
+		estructurasDeDatos.add(new ArbolBinarioDeBusqueda<Registro>());
+		estructurasDeDatos.add(new ArbolAVL<Registro>());
 	}
 
 	private static void menuPrincipalOpcion1() {
@@ -127,7 +128,7 @@ public class Principal {
 		inicializarEstructuras();
 		inicializarMetricas();
 
-		for (IEstructuraDeDatos estructuraDatos : estructurasDeDatos) {
+		for (IEstructuraDeDatos<Registro> estructuraDatos : estructurasDeDatos) {
 			Long tiempoCarga = GestorCSV.cargar(estructuraDatos, fullPathArchivo);
 			mapaMetricas.get(estructuraDatos.getTipoEstructura()).setTiempoInsercion(tiempoCarga);
 		}
@@ -138,15 +139,15 @@ public class Principal {
 		// buscar
 		// codigo harcoded para prueba ==> 1
 
-		for (IEstructuraDeDatos estructuraDeDatos : estructurasDeDatos) {
+		for (IEstructuraDeDatos<Registro> estructuraDeDatos : estructurasDeDatos) {
 			// TODO este
 			if (tipoEstructura.equals(estructuraDeDatos.getTipoEstructura())) {
-				String resultadoBusqueda = estructuraDeDatos.buscar(1);
+				Registro registro = estructuraDeDatos.buscar(1);
 				System.out.println();
 				separador();
 				System.out.println("BUSQUEDA DE VALOR: " + 1);
 				separador();
-				System.out.println("\t\t" + "Resultado: " + resultadoBusqueda);
+				System.out.println("\t\t" + "Resultado: " + registro);
 				break;
 			}
 		}
@@ -160,7 +161,7 @@ public class Principal {
 		separador();
 		System.out.println("CONSULTA AUTOMATICA - archivo: " + fullPathArchivo);
 		separador();
-		for (IEstructuraDeDatos estructuraDeDatos : estructurasDeDatos) {
+		for (IEstructuraDeDatos<Registro> estructuraDeDatos : estructurasDeDatos) {
 			Long tiempoConsulta = GestorCSV.consultar(estructuraDeDatos, fullPathArchivo);
 			mapaMetricas.get(estructuraDeDatos.getTipoEstructura()).setTiempoConsulta(tiempoConsulta);
 		}

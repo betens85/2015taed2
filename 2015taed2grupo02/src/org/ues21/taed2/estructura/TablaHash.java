@@ -4,32 +4,19 @@ package org.ues21.taed2.estructura;
  * @author grupo02
  *
  */
-public class TablaHash implements IEstructuraDeDatos {
+public class TablaHash<T> implements IEstructuraDeDatos<T> {
 
 	@Override
-	public String buscar(Integer codigoBusqueda) {
-		return "dummy result";
+	public T buscar(Integer codigoBusqueda) {
+		return null;
 	}
 
 	@Override
-	public void insertar(Integer codigo, String texto) {
-		// TODO Auto-generated method stub
-
+	public void insertar(T datos) {
 	}
 
 	@Override
 	public TipoEstructura getTipoEstructura() {
-		return TipoEstructura.AAVL;
+		return TipoEstructura.TABLA_HASH;
 	}
-
-	/**
-	 * Representa un nodo para una tabla hash
-	 * 
-	 * @author grupo02
-	 *
-	 */
-	private static class NodoTH {
-
-	}
-
 }
