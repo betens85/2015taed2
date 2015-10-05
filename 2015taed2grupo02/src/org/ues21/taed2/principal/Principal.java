@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 
 import org.ues21.taed2.estructura.ArbolAVL;
@@ -45,6 +46,7 @@ public class Principal {
 			} while (opcion != 0);
 		} catch (Exception ex) {
 			System.err.println("Ocurriò un error al procesar la opcion seleccionada.");
+			ex.printStackTrace();
 		} finally {
 			if (scanner != null) {
 				scanner.close();
@@ -142,12 +144,12 @@ public class Principal {
 		for (IEstructuraDeDatos<Registro> estructuraDeDatos : estructurasDeDatos) {
 			// TODO este
 			if (tipoEstructura.equals(estructuraDeDatos.getTipoEstructura())) {
-				Registro registro = estructuraDeDatos.buscar(1);
+				Registro registro = estructuraDeDatos.buscar(new Registro(3, null));
 				System.out.println();
 				separador();
 				System.out.println("BUSQUEDA DE VALOR: " + 1);
 				separador();
-				System.out.println("\t\t" + "Resultado: " + registro);
+				System.out.println("\t\t" + "Resultado: " + "Codigo: " + registro.getCodigo() + "\t Nombre: " + registro.getNombreCompleto());
 				break;
 			}
 		}
@@ -195,11 +197,13 @@ public class Principal {
 		separador();
 		System.out.println("REPRESENTACION DE ARBOL BINARIO DE BUSQUEDA");
 		separador();
-		// TODO imprimir arbol binario de busqueda
+		IEstructuraDeDatos<Registro> abb = estructurasDeDatos.stream().filter(ed-> TipoEstructura.ABB.equals(ed.getTipoEstructura())).findFirst().get();
+		GraficadorArbol.printNode(((ArbolBinarioDeBusqueda<Registro>)abb).getNodoRaiz());
 		System.out.println(" ");
 		separador();
 		System.out.println("REPRESENTACION DE ARBOL AVL");
 		separador();
-		// TODO imprimir arbol avl
+		IEstructuraDeDatos<Registro> avl = estructurasDeDatos.stream().filter(ed-> TipoEstructura.AAVL.equals(ed.getTipoEstructura())).findFirst().get();
+		GraficadorArbol.printNode(((ArbolBinarioDeBusqueda<Registro>)avl).getNodoRaiz());
 	}
 }

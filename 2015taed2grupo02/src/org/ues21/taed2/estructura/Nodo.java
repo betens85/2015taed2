@@ -4,6 +4,10 @@ public abstract class Nodo<T> {
 
 	private T datos;
 	
+	public Nodo(T datos) {
+		this.datos = datos;
+	}
+	
 	public T getDatos() {
 		return datos;
 	}
@@ -13,6 +17,11 @@ public abstract class Nodo<T> {
 	}
 
 	public static class NodoArbol<T> extends Nodo<T> {
+		
+		public NodoArbol(T datos) {
+			super(datos);
+		}
+
 		private NodoArbol<T> izquierdo;
 		private NodoArbol<T> derecho;
 
@@ -34,6 +43,11 @@ public abstract class Nodo<T> {
 	}
 	
 	public static class NodoAVL<T> extends NodoArbol<T> {
+		
+		public NodoAVL(T datos) {
+			super(datos);
+		}
+
 		private int factorEquilibrio;
 		
 		public int getFactorEquilibrio() {
@@ -46,6 +60,10 @@ public abstract class Nodo<T> {
 	}
 	
 	public static class NodoLD<T> extends Nodo<T> {
+
+		public NodoLD(T datos) {
+			super(datos);
+		}
 
 		private NodoLD<T> anterior;
 		private NodoLD<T> siguiente;
@@ -68,5 +86,9 @@ public abstract class Nodo<T> {
 	}
 	
 	public class NodoTH<T> extends Nodo<T> {
+
+		public NodoTH(T datos) {
+			super(datos);
+		}
 	}
 }

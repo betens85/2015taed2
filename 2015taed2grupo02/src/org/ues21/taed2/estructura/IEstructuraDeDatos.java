@@ -6,16 +6,15 @@ package org.ues21.taed2.estructura;
  * @author grupo02
  *
  */
-public interface IEstructuraDeDatos<T> {
+public interface IEstructuraDeDatos<T extends Comparable<T>> {
 
 	/**
 	 * Permite la busqueda de informacion a partir de un codigo de busqueda
 	 * 
-	 * @param codigoBusqueda
-	 *            el codigo de busqueda
+	 * @param datos los datos que serviran para la busqueda
 	 * @return el resultado de la busqueda
 	 */
-	T buscar(Integer codigoBusqueda);
+	T buscar(T datos);
 
 	/**
 	 * Permite la insercion de informacion en una estructura de datos
@@ -31,6 +30,12 @@ public interface IEstructuraDeDatos<T> {
 	 * @return el tipo de estructura
 	 */
 	TipoEstructura getTipoEstructura();
+	
+	/**
+	 * Metodo para verificar si la estructura de datos esta vacia
+	 * @return si esta vacia o no
+	 */
+	boolean estaVacia();
 
 	/**
 	 * Representa un enumeracion de los tipos de estructuras

@@ -77,9 +77,11 @@ public final class GestorCSV {
 			System.out.println(estructuraDeDatos.getTipoEstructura());
 			while (scanner.hasNextLine()) {
 				campos = scanner.nextLine().split(",");
-				Integer codigoBusqueda = new Integer(campos[0]);
-				Registro resultado = estructuraDeDatos.buscar(codigoBusqueda);
-				System.out.println(resultado);
+				Registro filtro = new Registro(new Integer(campos[0]), null);
+				Registro resultado = estructuraDeDatos.buscar(filtro);
+				if (resultado != null) {
+					System.out.println(resultado.getCodigo() + " - " + resultado.getNombreCompleto());
+				}
 			}
 		} catch (IOException ex) {
 			System.err.println("Ocurrio una excepcion al procesar el archivo: " + ex.getMessage());
@@ -98,7 +100,7 @@ public final class GestorCSV {
 	 * @author grupo02
 	 *
 	 */
-	public static class Registro {
+	public static class Registro implements Comparable<Registro> {
 		private Integer codigo;
 		private String nombreCompleto;
 		
@@ -121,10 +123,11 @@ public final class GestorCSV {
 		
 		@Override
 		public String toString() {
-			StringBuilder sb = new StringBuilder();
-			sb.append("\tCodigo: " + codigo);
-			sb.append("\t\tNombre completo: " + nombreCompleto);
-			return super.toString();
+			return codigo.toString();
+		}
+		@Override
+		public int compareTo(Registro r) {
+			return codigo.compareTo(r.getCodigo());
 		}
 	}
 }
