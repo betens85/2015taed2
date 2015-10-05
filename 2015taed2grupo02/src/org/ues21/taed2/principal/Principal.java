@@ -115,10 +115,12 @@ public class Principal {
 	private static void menuPrincipalOpcion1() {
 		// TODO preguntar por path directorio y setear en variable
 		// 'pathDirectorio'
+		mostrarTituloSeparador("CARGA DE PATH DIRECTORIO");
+		System.out.print("\nIngrese el path del directorio: ");
 		
 		pathDirectorioCargado = true;
 	}
-
+	
 	private static void menuPrincipalOpcion2() {
 		if (pathDirectorioCargado) {
 			// TODO controlar que este cargado path de directorio, sino esta
@@ -126,10 +128,7 @@ public class Principal {
 			// tirar excepcion o salir
 			// TODO datos.csv harcoded, deberia ser cargado por la consola
 			String fullPathArchivo = pathDirectorio + File.separator + "datos.csv";
-			separador();
-			System.out.println("CARGA DE DATOS  - Archivo: " + fullPathArchivo);
-			separador();
-
+			mostrarTituloSeparador("CARGA DE DATOS  - Archivo: " + fullPathArchivo);
 			inicializarEstructuras();
 			inicializarMetricas();
 
@@ -151,9 +150,7 @@ public class Principal {
 			IEstructuraDeDatos<Registro> estructuraDeDatos = estructurasMap.get(tipoEstructura);
 			Registro registro = estructuraDeDatos.buscar(new Registro(codigoBuscado, null));
 			System.out.println();
-			separador();
-			System.out.println("BUSQUEDA DE VALOR: " + codigoBuscado);
-			separador();
+			mostrarTituloSeparador("BUSQUEDA DE VALOR: " + codigoBuscado);
 			System.out.println("\t\t" + "Resultado: " + "Codigo: " + registro.getCodigo() + "\t Nombre: "
 					+ registro.getNombreCompleto());
 		}
@@ -168,9 +165,7 @@ public class Principal {
 			// TODO preguntar como se llama el archivo de consulta
 			String fullPathArchivo = pathDirectorio + File.separator + "consulta.csv";
 			System.out.println();
-			separador();
-			System.out.println("CONSULTA AUTOMATICA - archivo: " + fullPathArchivo);
-			separador();
+			mostrarTituloSeparador("CONSULTA AUTOMATICA - archivo: " + fullPathArchivo);
 			estructurasMap.forEach((k, v) -> mapaMetricas.get(v.getTipoEstructura())
 					.setTiempoConsulta(GestorCSV.consultar(v, fullPathArchivo)));
 		}
@@ -187,9 +182,7 @@ public class Principal {
 	private static void menuPrincipalOpcion5() {
 		if (estructurasCargadas) {
 			System.out.println();
-			separador();
-			System.out.println("REPORTE DE METRICAS DE ESTRUCTURA ");
-			separador();
+			mostrarTituloSeparador("REPORTE DE METRICAS DE ESTRUCTURA ");
 			System.out.println();
 			System.out.println("Estructura                       Tiempo Insercion               Tiempo Consulta\n");
 			System.out.println(TipoEstructura.LISTA_DOB_ENLAZADA + "\t\t\t"
@@ -211,17 +204,13 @@ public class Principal {
 
 	private static void menuPrincipalOpcion6() {
 		if (estructurasCargadas) {
-			System.out.println(" ");
-			separador();
-			System.out.println("REPRESENTACION DE ARBOL BINARIO DE BUSQUEDA");
-			separador();
+			System.out.println();
+			mostrarTituloSeparador("REPRESENTACION DE ARBOL BINARIO DE BUSQUEDA");
 			ArbolBinarioDeBusqueda<Registro> abb = (ArbolBinarioDeBusqueda<Registro>) estructurasMap
 					.get(TipoEstructura.ABB);
 			GraficadorArbol.printNode(abb.getNodoRaiz());
-			System.out.println(" ");
-			separador();
-			System.out.println("REPRESENTACION DE ARBOL AVL");
-			separador();
+			System.out.println();
+			mostrarTituloSeparador("REPRESENTACION DE ARBOL AVL");
 			ArbolBinarioDeBusqueda<Registro> avl = (ArbolBinarioDeBusqueda<Registro>) estructurasMap
 					.get(TipoEstructura.AAVL);
 			GraficadorArbol.printNode(avl.getNodoRaiz());
@@ -229,5 +218,12 @@ public class Principal {
 		else{
 			System.out.println("\n** Debe cargar las estructuras de datos (Menu principal Opcion 2) **");
 		}
+	}
+	
+	private static void mostrarTituloSeparador(String titulo) {
+		System.out.println();
+		separador();
+		System.out.println(titulo);
+		separador();
 	}
 }
