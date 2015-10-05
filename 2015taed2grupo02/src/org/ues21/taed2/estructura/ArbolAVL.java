@@ -1,6 +1,6 @@
 package org.ues21.taed2.estructura;
 
-import org.ues21.taed2.estructura.Nodo.NodoAVL;
+import org.ues21.taed2.estructura.Nodo.NodoArbol;
 
 /**
  * Clase que representa estructura y comportamiento de un arbol AVL
@@ -9,7 +9,6 @@ import org.ues21.taed2.estructura.Nodo.NodoAVL;
  */
 public class ArbolAVL<T extends Comparable<T>> extends ArbolBinarioDeBusqueda<T> {
 	
-	private NodoAVL<T> nodoRaiz;
 	private boolean h;
 	
 	@Override
@@ -23,14 +22,14 @@ public class ArbolAVL<T extends Comparable<T>> extends ArbolBinarioDeBusqueda<T>
 		return TipoEstructura.AAVL;
 	}
 
-	private NodoAVL<T> insertar(NodoAVL<T> nodo, T datos) {
-		NodoAVL<T> p1, p2;
+	private NodoArbol<T> insertar(NodoArbol<T> nodo, T datos) {
+		NodoArbol<T> p1, p2;
 
 		if (nodo == null) {
-			nodo = new NodoAVL<T>(datos);
+			nodo = new NodoArbol<T>(datos, 0, null, null);
 			h = true;
 		} else if (datos.compareTo(nodo.getDatos()) < 0) {
-			nodo.setIzquierdo(insertar((NodoAVL<T>) nodo.getIzquierdo(), datos));
+			nodo.setIzquierdo(insertar((NodoArbol<T>) nodo.getIzquierdo(), datos));
 			if (h) {
 				// Crecio la rama izquierda
 
@@ -44,7 +43,7 @@ public class ArbolAVL<T extends Comparable<T>> extends ArbolBinarioDeBusqueda<T>
 					break;
 				case -1:
 					// Reequilibrar
-					p1 = (NodoAVL<T>) nodo.getIzquierdo();
+					p1 = (NodoArbol<T>) nodo.getIzquierdo();
 					if (p1.getFactorEquilibrio() == -1) {
 						// Rotación izquierda simple
 						nodo.setIzquierdo(p1.getDerecho());
@@ -53,7 +52,7 @@ public class ArbolAVL<T extends Comparable<T>> extends ArbolBinarioDeBusqueda<T>
 						nodo = p1;
 					} else {
 						// Rotación izquierda doble
-						p2 = (NodoAVL<T>) p1.getDerecho();
+						p2 = (NodoArbol<T>) p1.getDerecho();
 						p1.setDerecho(p2.getIzquierdo());
 						p2.setIzquierdo(p1);
 						nodo.setIzquierdo(p2.getDerecho());
@@ -73,7 +72,7 @@ public class ArbolAVL<T extends Comparable<T>> extends ArbolBinarioDeBusqueda<T>
 			} // fin if(h == true)
 		} // fin if(x < (int) p.getInfo())
 		else if (datos.compareTo(nodo.getDatos()) > 0) {
-			nodo.setDerecho(insertar((NodoAVL<T>) nodo.getDerecho(), datos));
+			nodo.setDerecho(insertar((NodoArbol<T>) nodo.getDerecho(), datos));
 			if (h == true) {
 				// Crecio la rama derecha
 
@@ -83,7 +82,7 @@ public class ArbolAVL<T extends Comparable<T>> extends ArbolBinarioDeBusqueda<T>
 					break;
 				case 1:
 					// Reequilibrar
-					p1 = (NodoAVL<T>) nodo.getDerecho();
+					p1 = (NodoArbol<T>) nodo.getDerecho();
 					if (p1.getFactorEquilibrio() == 1) {
 						// Rotación derecha simple
 						nodo.setDerecho(p1.getIzquierdo());
@@ -93,7 +92,7 @@ public class ArbolAVL<T extends Comparable<T>> extends ArbolBinarioDeBusqueda<T>
 					} else {
 						// Rotación derecha doble
 
-						p2 = (NodoAVL<T>) p1.getIzquierdo();
+						p2 = (NodoArbol<T>) p1.getIzquierdo();
 						p1.setIzquierdo(p2.getDerecho());
 						p2.setDerecho(p1);
 						nodo.setDerecho(p2.getIzquierdo());

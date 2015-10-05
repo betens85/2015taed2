@@ -29,12 +29,28 @@ public abstract class Nodo<T> {
 	 */
 	public static class NodoArbol<T> extends Nodo<T> {
 		
+		private NodoArbol<T> izquierdo;
+		private NodoArbol<T> derecho;
+		private int factorEquilibrio;
+		
 		public NodoArbol(T datos) {
 			super(datos);
 		}
 
-		private NodoArbol<T> izquierdo;
-		private NodoArbol<T> derecho;
+		public NodoArbol(T datos, int factorEquilibrio, NodoArbol<T> izquierdo, NodoArbol<T> derecho) {
+			super(datos);
+			this.factorEquilibrio = factorEquilibrio;
+			this.izquierdo = izquierdo;
+			this.derecho = derecho;
+		}
+
+		public int getFactorEquilibrio() {
+			return factorEquilibrio;
+		}
+		
+		public void setFactorEquilibrio(int factorEquilibrio) {
+			this.factorEquilibrio = factorEquilibrio;
+		}
 
 		public NodoArbol<T> getIzquierdo() {
 			return izquierdo;
@@ -50,28 +66,6 @@ public abstract class Nodo<T> {
 
 		public void setDerecho(NodoArbol<T> derecho) {
 			this.derecho = derecho;
-		}
-	}
-	
-	/**
-	 * Clase que representa un nodo de un arbol AVL
-	 * @author grupo02
-	 *
-	 */
-	public static class NodoAVL<T> extends NodoArbol<T> {
-		
-		public NodoAVL(T datos) {
-			super(datos);
-		}
-
-		private int factorEquilibrio;
-		
-		public int getFactorEquilibrio() {
-			return factorEquilibrio;
-		}
-		
-		public void setFactorEquilibrio(int factorEquilibrio) {
-			this.factorEquilibrio = factorEquilibrio;
 		}
 	}
 	

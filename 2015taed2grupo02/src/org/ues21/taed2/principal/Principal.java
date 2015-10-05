@@ -79,7 +79,7 @@ public class Principal {
 			break;
 		case 3:
 			// TODO harcoded for testing purposal
-			menuPrincipalOpcion3(TipoEstructura.ABB);
+			menuPrincipalOpcion3(TipoEstructura.AAVL);
 			break;
 		case 4:
 			menuPrincipalOpcion4();
