@@ -1,8 +1,8 @@
 package org.ues21.taed2.estructura;
 
 /**
+ * Clase que representa una estructura de datos de tipo tabla hash
  * @author grupo02
- *
  */
 public class TablaHash<T extends Comparable<T>> implements IEstructuraDeDatos<T> {
 

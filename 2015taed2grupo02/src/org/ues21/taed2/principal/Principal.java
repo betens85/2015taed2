@@ -4,11 +4,8 @@
 package org.ues21.taed2.principal;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Scanner;
 
 import org.ues21.taed2.estructura.ArbolAVL;
@@ -29,8 +26,10 @@ import org.ues21.taed2.principal.GestorCSV.Registro;
 public class Principal {
 
 	private static Map<TipoEstructura, Metricas> mapaMetricas = new HashMap<>();
-	private static List<IEstructuraDeDatos<Registro>> estructurasDeDatos = new ArrayList<>();
+	private static Map<TipoEstructura, IEstructuraDeDatos<Registro>> estructurasMap = new HashMap<>();
 	private static String pathDirectorio = "/home/norberto/taed2";
+	private static boolean pathDirectorioCargado;
+	private static boolean estructurasCargadas;
 
 	public static void main(String[] args) {
 		inicializarMetricas();
@@ -106,66 +105,77 @@ public class Principal {
 	}
 
 	private static void inicializarEstructuras() {
-		estructurasDeDatos.clear();
-		estructurasDeDatos.add(new ListaDobleEnlazada<Registro>());
-		estructurasDeDatos.add(new TablaHash<Registro>());
-		estructurasDeDatos.add(new ArbolBinarioDeBusqueda<Registro>());
-		estructurasDeDatos.add(new ArbolAVL<Registro>());
+		estructurasMap.clear();
+		estructurasMap.put(TipoEstructura.LISTA_DOB_ENLAZADA, new ListaDobleEnlazada<Registro>());
+		estructurasMap.put(TipoEstructura.TABLA_HASH, new TablaHash<Registro>());
+		estructurasMap.put(TipoEstructura.ABB, new ArbolBinarioDeBusqueda<Registro>());
+		estructurasMap.put(TipoEstructura.AAVL, new ArbolAVL<Registro>());
 	}
 
 	private static void menuPrincipalOpcion1() {
 		// TODO preguntar por path directorio y setear en variable
 		// 'pathDirectorio'
+		
+		pathDirectorioCargado = true;
 	}
 
 	private static void menuPrincipalOpcion2() {
-		// TODO controlar que este cargado path de directorio, sino esta cargado
-		// tirar excepcion o salir
-		// TODO datos.csv harcoded, deberia ser cargado por la consola
-		String fullPathArchivo = pathDirectorio + File.separator + "datos.csv";
-		separador();
-		System.out.println("CARGA DE DATOS  - Archivo: " + fullPathArchivo);
-		separador();
+		if (pathDirectorioCargado) {
+			// TODO controlar que este cargado path de directorio, sino esta
+			// cargado
+			// tirar excepcion o salir
+			// TODO datos.csv harcoded, deberia ser cargado por la consola
+			String fullPathArchivo = pathDirectorio + File.separator + "datos.csv";
+			separador();
+			System.out.println("CARGA DE DATOS  - Archivo: " + fullPathArchivo);
+			separador();
 
-		inicializarEstructuras();
-		inicializarMetricas();
+			inicializarEstructuras();
+			inicializarMetricas();
 
-		for (IEstructuraDeDatos<Registro> estructuraDatos : estructurasDeDatos) {
-			Long tiempoCarga = GestorCSV.cargar(estructuraDatos, fullPathArchivo);
-			mapaMetricas.get(estructuraDatos.getTipoEstructura()).setTiempoInsercion(tiempoCarga);
+			estructurasMap.forEach((k, v) -> mapaMetricas.get(v.getTipoEstructura())
+					.setTiempoInsercion(GestorCSV.cargar(v, fullPathArchivo)));
+
+			estructurasCargadas = true;
+		}else{
+			System.out.println("\n** Debe cargar el path del directorio (Menu principal Opcion 1) **");
 		}
 	}
 
 	private static void menuPrincipalOpcion3(TipoEstructura tipoEstructura) {
-		// TODO hacer submenu que pregunte tipo estructura y dps el codigo a
-		// buscar
-		// codigo harcoded para prueba ==> 1
-
-		for (IEstructuraDeDatos<Registro> estructuraDeDatos : estructurasDeDatos) {
-			// TODO este
-			if (tipoEstructura.equals(estructuraDeDatos.getTipoEstructura())) {
-				Registro registro = estructuraDeDatos.buscar(new Registro(3, null));
-				System.out.println();
-				separador();
-				System.out.println("BUSQUEDA DE VALOR: " + 1);
-				separador();
-				System.out.println("\t\t" + "Resultado: " + "Codigo: " + registro.getCodigo() + "\t Nombre: " + registro.getNombreCompleto());
-				break;
-			}
+		if (estructurasCargadas) {
+			// TODO hacer submenu que pregunte tipo estructura y dps el codigo a
+			// buscar
+			// codigo harcoded para prueba ==> 3
+			int codigoBuscado = 3;
+			IEstructuraDeDatos<Registro> estructuraDeDatos = estructurasMap.get(tipoEstructura);
+			Registro registro = estructuraDeDatos.buscar(new Registro(codigoBuscado, null));
+			System.out.println();
+			separador();
+			System.out.println("BUSQUEDA DE VALOR: " + codigoBuscado);
+			separador();
+			System.out.println("\t\t" + "Resultado: " + "Codigo: " + registro.getCodigo() + "\t Nombre: "
+					+ registro.getNombreCompleto());
+		}
+		else{
+			System.out.println("\n** Debe cargar las estructuras de datos (Menu principal Opcion 2) **");
 		}
 	}
 
 	private static void menuPrincipalOpcion4() {
-		// TODO chequear si el directorio fue cargado
-		// TODO preguntar como se llama el archivo de consulta
-		String fullPathArchivo = pathDirectorio + File.separator + "consulta.csv";
-		System.out.println();
-		separador();
-		System.out.println("CONSULTA AUTOMATICA - archivo: " + fullPathArchivo);
-		separador();
-		for (IEstructuraDeDatos<Registro> estructuraDeDatos : estructurasDeDatos) {
-			Long tiempoConsulta = GestorCSV.consultar(estructuraDeDatos, fullPathArchivo);
-			mapaMetricas.get(estructuraDeDatos.getTipoEstructura()).setTiempoConsulta(tiempoConsulta);
+		if (estructurasCargadas) {
+			// TODO chequear si el directorio fue cargado
+			// TODO preguntar como se llama el archivo de consulta
+			String fullPathArchivo = pathDirectorio + File.separator + "consulta.csv";
+			System.out.println();
+			separador();
+			System.out.println("CONSULTA AUTOMATICA - archivo: " + fullPathArchivo);
+			separador();
+			estructurasMap.forEach((k, v) -> mapaMetricas.get(v.getTipoEstructura())
+					.setTiempoConsulta(GestorCSV.consultar(v, fullPathArchivo)));
+		}
+		else{
+			System.out.println("\n** Debe cargar las estructuras de datos (Menu principal Opcion 2) **");
 		}
 	}
 
@@ -175,35 +185,49 @@ public class Principal {
 	}
 
 	private static void menuPrincipalOpcion5() {
-		separador();
-		System.out.println("REPORTE DE METRICAS DE ESTRUCTURA ");
-		separador();
-		System.out.println();
-		System.out.println("Estructura                       Tiempo Insercion               Tiempo Consulta\n");
-		System.out.println(TipoEstructura.LISTA_DOB_ENLAZADA + "\t\t\t"
-				+ mapaMetricas.get(TipoEstructura.LISTA_DOB_ENLAZADA).getTiempoInsercion() + "\t\t\t\t"
-				+ mapaMetricas.get(TipoEstructura.LISTA_DOB_ENLAZADA).getTiempoConsulta());
-		System.out.println(TipoEstructura.TABLA_HASH + "\t\t\t\t"
-				+ mapaMetricas.get(TipoEstructura.TABLA_HASH).getTiempoInsercion() + "\t\t\t\t"
-				+ mapaMetricas.get(TipoEstructura.TABLA_HASH).getTiempoConsulta());
-		System.out.println(TipoEstructura.ABB + "\t\t" + mapaMetricas.get(TipoEstructura.ABB).getTiempoInsercion()
-				+ "\t\t\t\t" + mapaMetricas.get(TipoEstructura.ABB).getTiempoConsulta());
-		System.out.println(TipoEstructura.AAVL + "\t\t\t\t" + mapaMetricas.get(TipoEstructura.AAVL).getTiempoInsercion()
-				+ "\t\t\t\t" + mapaMetricas.get(TipoEstructura.AAVL).getTiempoConsulta());
+		if (estructurasCargadas) {
+			System.out.println();
+			separador();
+			System.out.println("REPORTE DE METRICAS DE ESTRUCTURA ");
+			separador();
+			System.out.println();
+			System.out.println("Estructura                       Tiempo Insercion               Tiempo Consulta\n");
+			System.out.println(TipoEstructura.LISTA_DOB_ENLAZADA + "\t\t\t"
+					+ mapaMetricas.get(TipoEstructura.LISTA_DOB_ENLAZADA).getTiempoInsercion() + "\t\t\t\t"
+					+ mapaMetricas.get(TipoEstructura.LISTA_DOB_ENLAZADA).getTiempoConsulta());
+			System.out.println(TipoEstructura.TABLA_HASH + "\t\t\t\t"
+					+ mapaMetricas.get(TipoEstructura.TABLA_HASH).getTiempoInsercion() + "\t\t\t\t"
+					+ mapaMetricas.get(TipoEstructura.TABLA_HASH).getTiempoConsulta());
+			System.out.println(TipoEstructura.ABB + "\t\t" + mapaMetricas.get(TipoEstructura.ABB).getTiempoInsercion()
+					+ "\t\t\t\t" + mapaMetricas.get(TipoEstructura.ABB).getTiempoConsulta());
+			System.out.println(
+					TipoEstructura.AAVL + "\t\t\t\t" + mapaMetricas.get(TipoEstructura.AAVL).getTiempoInsercion()
+							+ "\t\t\t\t" + mapaMetricas.get(TipoEstructura.AAVL).getTiempoConsulta());
+		}
+		else{
+			System.out.println("\n** Debe cargar las estructuras de datos (Menu principal Opcion 2) **");
+		}
 	}
 
 	private static void menuPrincipalOpcion6() {
-		System.out.println(" ");
-		separador();
-		System.out.println("REPRESENTACION DE ARBOL BINARIO DE BUSQUEDA");
-		separador();
-		IEstructuraDeDatos<Registro> abb = estructurasDeDatos.stream().filter(ed-> TipoEstructura.ABB.equals(ed.getTipoEstructura())).findFirst().get();
-		GraficadorArbol.printNode(((ArbolBinarioDeBusqueda<Registro>)abb).getNodoRaiz());
-		System.out.println(" ");
-		separador();
-		System.out.println("REPRESENTACION DE ARBOL AVL");
-		separador();
-		IEstructuraDeDatos<Registro> avl = estructurasDeDatos.stream().filter(ed-> TipoEstructura.AAVL.equals(ed.getTipoEstructura())).findFirst().get();
-		GraficadorArbol.printNode(((ArbolBinarioDeBusqueda<Registro>)avl).getNodoRaiz());
+		if (estructurasCargadas) {
+			System.out.println(" ");
+			separador();
+			System.out.println("REPRESENTACION DE ARBOL BINARIO DE BUSQUEDA");
+			separador();
+			ArbolBinarioDeBusqueda<Registro> abb = (ArbolBinarioDeBusqueda<Registro>) estructurasMap
+					.get(TipoEstructura.ABB);
+			GraficadorArbol.printNode(abb.getNodoRaiz());
+			System.out.println(" ");
+			separador();
+			System.out.println("REPRESENTACION DE ARBOL AVL");
+			separador();
+			ArbolBinarioDeBusqueda<Registro> avl = (ArbolBinarioDeBusqueda<Registro>) estructurasMap
+					.get(TipoEstructura.AAVL);
+			GraficadorArbol.printNode(avl.getNodoRaiz());
+		}
+		else{
+			System.out.println("\n** Debe cargar las estructuras de datos (Menu principal Opcion 2) **");
+		}
 	}
 }

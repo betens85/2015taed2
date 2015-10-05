@@ -3,6 +3,7 @@ package org.ues21.taed2.estructura;
 import org.ues21.taed2.estructura.Nodo.NodoLD;
 
 /**
+ * Clase que representa una lista doble enlazada
  * @author grupo02
  *
  */
@@ -26,6 +27,10 @@ public class ListaDobleEnlazada<T extends Comparable<T>> implements IEstructuraD
 		return primero == null || ultimo == null;
 	}
 	
+	/**
+	 * Permite insertar un nodo al principio de la lista
+	 * @param datos los datos que formaran parte del nodo a insertar
+	 */
 	private void insertarAlPrincipio(T datos) {
 		NodoLD<T> nuevoNodo = new NodoLD<>(datos);
 		
@@ -40,6 +45,10 @@ public class ListaDobleEnlazada<T extends Comparable<T>> implements IEstructuraD
 		}
 	}
 
+	/**
+	 * Permite insertar un nodo al final de la lista
+	 * @param datos los datos que formaran parte del nodo a insertar
+	 */
 	private void insertarAlFinal(T datos) {
 		NodoLD<T> nuevoNodo = new NodoLD<>(datos);
 		
@@ -55,6 +64,11 @@ public class ListaDobleEnlazada<T extends Comparable<T>> implements IEstructuraD
 		}
 	}
 	
+	/**
+	 * Permite la busqueda de datos hacia adelante, es decir a partir del primer elemento de la lista
+	 * @param datos los datos a buscar dentro de la lista
+	 * @return el nodo resultado
+	 */
 	private NodoLD<T> buscarHaciaAdelante(T datos) {
 
 		if (!estaVacia()) {
@@ -70,6 +84,12 @@ public class ListaDobleEnlazada<T extends Comparable<T>> implements IEstructuraD
 		return null;
 	}
 
+	
+	/**
+	 * Permite la busqueda de datos hacia atras, es decir a partir del ultimo elemento de la lista
+	 * @param datos los datos a buscar dentro de la lista
+	 * @return el nodo resultado
+	 */
 	private NodoLD<T> buscarHaciaAtras(T datos) {
 
 		if (!estaVacia()) {
@@ -85,6 +105,10 @@ public class ListaDobleEnlazada<T extends Comparable<T>> implements IEstructuraD
 		return null;
 	}
 
+	/**
+	 * Metodo que permite borrar un elemento de la lista a partir de un criterio de busqueda pasado por parametro
+	 * @param datos parametro de busqueda de nodo a borrar
+	 */
 	public void borrar(T datos) {
 		NodoLD<T> nodoABorrar = buscarHaciaAdelante(datos);
 

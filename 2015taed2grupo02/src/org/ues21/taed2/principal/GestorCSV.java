@@ -37,7 +37,6 @@ public final class GestorCSV {
 			scanner = new Scanner(file);
 			String[] campos;
 			while (scanner.hasNextLine()) {
-
 				campos = scanner.nextLine().split(",");
 				estructuraDeDatos.insertar(new Registro(new Integer(campos[0]), campos[1]));
 			}
@@ -73,15 +72,24 @@ public final class GestorCSV {
 		try {
 			scanner = new Scanner(file);
 			String[] campos;
-			System.out.println();
-			System.out.println(estructuraDeDatos.getTipoEstructura());
+			StringBuilder sbResultados = new StringBuilder();
+			
 			while (scanner.hasNextLine()) {
 				campos = scanner.nextLine().split(",");
 				Registro filtro = new Registro(new Integer(campos[0]), null);
 				Registro resultado = estructuraDeDatos.buscar(filtro);
 				if (resultado != null) {
-					System.out.println(resultado.getCodigo() + " - " + resultado.getNombreCompleto());
+					sbResultados.append("\n\tCodigo: " + resultado.getCodigo() + " - Resultado: " + resultado.getNombreCompleto());
 				}
+				else{
+					sbResultados.append("\n\tCodigo: " + filtro.getCodigo() + " - Resultado: NO ENCONTRADO");
+				}
+			}
+			
+			if (sbResultados.length() > 0) {
+				System.out.println();
+				System.out.println(estructuraDeDatos.getTipoEstructura());
+				System.out.println(sbResultados);
 			}
 		} catch (IOException ex) {
 			System.err.println("Ocurrio una excepcion al procesar el archivo: " + ex.getMessage());

@@ -3,6 +3,7 @@ package org.ues21.taed2.estructura;
 import org.ues21.taed2.estructura.Nodo.NodoArbol;
 
 /**
+ * Clase que representa estructura y comportamiento de un arbol binario de busqueda
  * @author grupo02
  *
  */
@@ -39,6 +40,11 @@ public class ArbolBinarioDeBusqueda<T extends Comparable<T>> implements IEstruct
 		return nodoRaiz;
 	}
 	
+	/**
+	 * Metodo recursivo que permite insertar datos dentro del arbol
+	 * @param datos los datos que seran parte del nodo del arbol
+	 * @param nodo el nodo actual
+	 */
     private void insertar(T datos, NodoArbol<T> nodo) {
         if (datos.compareTo(nodo.getDatos()) > 0) {
             if (nodo.getDerecho() != null) {
@@ -55,12 +61,21 @@ public class ArbolBinarioDeBusqueda<T extends Comparable<T>> implements IEstruct
         }
     }
     
+    /**
+     * Metodo que retorna una representacion inorden del arbol
+     * @return cadena con la representacion inorden
+     */
     public String mostrarInOrden() {
         StringBuilder sb = new StringBuilder();
         mostrarInOrden(nodoRaiz, sb);
         return sb.toString();
     }
 
+    /**
+     * Metodo recursivo para representar el arbol con recorrido inorden
+     * @param nodo el nodo actual
+     * @param sb cadena de texto donde se almacena la representacion
+     */
     private void mostrarInOrden(NodoArbol<T> nodo, StringBuilder sb) {
         if (nodo != null) {
             mostrarInOrden(nodo.getIzquierdo(), sb);
@@ -70,12 +85,21 @@ public class ArbolBinarioDeBusqueda<T extends Comparable<T>> implements IEstruct
         }
     }
     
+    /**
+     * Metodo que retorna una representacion preorden del arbol
+     * @return cadena con la representacion preorden
+     */
     public String mostrarPreOrden() {
     	StringBuilder sb = new StringBuilder();
         mostrarPreOrden(nodoRaiz, sb);
         return sb.toString();
     }
-
+    
+    /**
+     * Metodo recursivo para representar el arbol con recorrido preorden
+     * @param nodo el nodo actual
+     * @param sb cadena de texto donde se almacena la representacion
+     */
     private void mostrarPreOrden(NodoArbol<T> nodo, StringBuilder sb) {
         if (nodo != null) {
         	sb.append(nodo.getDatos());
@@ -85,12 +109,21 @@ public class ArbolBinarioDeBusqueda<T extends Comparable<T>> implements IEstruct
         }
     }
 
+    /**
+     * Metodo que retorna una representacion postorden del arbol
+     * @return cadena con la representacion postorden
+     */
     public String mostrarPostOrden() {
         StringBuilder sb = new StringBuilder();
         mostrarPostOrden(nodoRaiz, sb);
         return sb.toString();
     }
 
+    /**
+     * Metodo recursivo para representar el arbol con recorrido postorden
+     * @param nodo el nodo actual
+     * @param sb cadena de texto donde se almacena la representacion
+     */
     private void mostrarPostOrden(NodoArbol<T> nodo, StringBuilder sb) {
         if (nodo != null) {
         	mostrarPostOrden(nodo.getIzquierdo(), sb);
@@ -246,7 +279,7 @@ public class ArbolBinarioDeBusqueda<T extends Comparable<T>> implements IEstruct
         return sb.toString();
     }
 
-    public void mostrarNodoConNivel(NodoArbol<T> nodo, StringBuilder sb) {
+    private void mostrarNodoConNivel(NodoArbol<T> nodo, StringBuilder sb) {
         if (nodo != null) {
             mostrarNodoConNivel(nodo.getIzquierdo(), sb);
             sb.append(nodo.getDatos());

@@ -1,6 +1,7 @@
 package org.ues21.taed2.estructura;
 
 /**
+ * Clase que representa estructura y comportamiento de un arbol AVL
  * @author grupo02
  *
  */

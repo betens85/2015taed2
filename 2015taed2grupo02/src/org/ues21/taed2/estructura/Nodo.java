@@ -1,5 +1,11 @@
 package org.ues21.taed2.estructura;
 
+/**
+ * Clase que define la estructura basica de un nodo
+ * @author grupo02
+ *
+ * @param <T> representacion parametrizada generica de los datos que contendra
+ */
 public abstract class Nodo<T> {
 
 	private T datos;
@@ -16,6 +22,11 @@ public abstract class Nodo<T> {
 		this.datos = datos;
 	}
 
+	/**
+	 * Clase que representa un nodo de un arbol
+	 * @author grupo02
+	 *
+	 */
 	public static class NodoArbol<T> extends Nodo<T> {
 		
 		public NodoArbol(T datos) {
@@ -42,6 +53,11 @@ public abstract class Nodo<T> {
 		}
 	}
 	
+	/**
+	 * Clase que representa un nodo de un arbol AVL
+	 * @author grupo02
+	 *
+	 */
 	public static class NodoAVL<T> extends NodoArbol<T> {
 		
 		public NodoAVL(T datos) {
@@ -59,6 +75,10 @@ public abstract class Nodo<T> {
 		}
 	}
 	
+	/**
+	 * Clase que representa un nodo de una lista doble enlazada
+	 * @author grupo02
+	 */
 	public static class NodoLD<T> extends Nodo<T> {
 
 		public NodoLD(T datos) {
@@ -85,6 +105,10 @@ public abstract class Nodo<T> {
 		}
 	}
 	
+	/**
+	 * Clase que representa un nodo de una tabla hash
+	 * @author grupo02
+	 */
 	public class NodoTH<T> extends Nodo<T> {
 
 		public NodoTH(T datos) {
