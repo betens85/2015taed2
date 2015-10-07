@@ -9,11 +9,11 @@ import org.ues21.taed2.estructura.Nodo.NodoArbol;
  */
 public class ArbolAVL<T extends Comparable<T>> extends ArbolBinarioDeBusqueda<T> {
 	
-	private boolean h;
+	private boolean crecimientoEnAltura;
 	
 	@Override
 	public void insertar(T datos) {
-		h = false;
+		crecimientoEnAltura = false;
 		nodoRaiz = insertar(nodoRaiz, datos);
 	}
 
@@ -23,14 +23,14 @@ public class ArbolAVL<T extends Comparable<T>> extends ArbolBinarioDeBusqueda<T>
 	}
 
 	private NodoArbol<T> insertar(NodoArbol<T> nodo, T datos) {
-		NodoArbol<T> p1, p2;
+		NodoArbol<T> nodo1, nodo2;
 
 		if (nodo == null) {
 			nodo = new NodoArbol<T>(datos, 0, null, null);
-			h = true;
+			crecimientoEnAltura = true;
 		} else if (datos.compareTo(nodo.getDatos()) < 0) {
 			nodo.setIzquierdo(insertar((NodoArbol<T>) nodo.getIzquierdo(), datos));
-			if (h) {
+			if (crecimientoEnAltura) {
 				// Crecio la rama izquierda
 
 				switch (nodo.getFactorEquilibrio()) {
@@ -39,41 +39,41 @@ public class ArbolAVL<T extends Comparable<T>> extends ArbolBinarioDeBusqueda<T>
 					break;
 				case 1:
 					nodo.setFactorEquilibrio(0);
-					h = false;
+					crecimientoEnAltura = false;
 					break;
 				case -1:
 					// Reequilibrar
-					p1 = (NodoArbol<T>) nodo.getIzquierdo();
-					if (p1.getFactorEquilibrio() == -1) {
+					nodo1 = (NodoArbol<T>) nodo.getIzquierdo();
+					if (nodo1.getFactorEquilibrio() == -1) {
 						// Rotación izquierda simple
-						nodo.setIzquierdo(p1.getDerecho());
-						p1.setDerecho(nodo);
+						nodo.setIzquierdo(nodo1.getDerecho());
+						nodo1.setDerecho(nodo);
 						nodo.setFactorEquilibrio(0);
-						nodo = p1;
+						nodo = nodo1;
 					} else {
 						// Rotación izquierda doble
-						p2 = (NodoArbol<T>) p1.getDerecho();
-						p1.setDerecho(p2.getIzquierdo());
-						p2.setIzquierdo(p1);
-						nodo.setIzquierdo(p2.getDerecho());
-						p2.setDerecho(nodo);
-						nodo = p2;
-						// p1.dcho = p2.izdo;
-						// p2.izdo = p1;
-						// p.izq = p2.dcho;
-						// p2.dcho = p;
-						// p = p2
+						nodo2 = (NodoArbol<T>) nodo1.getDerecho();
+						nodo1.setDerecho(nodo2.getIzquierdo());
+						nodo2.setIzquierdo(nodo1);
+						nodo.setIzquierdo(nodo2.getDerecho());
+						nodo2.setDerecho(nodo);
+						nodo = nodo2;
+						// nodo1.getDerecho() = nodo2.getIzquierdo();
+						// nodo2.getIzquierdo() = nodo1;
+						// nodo.getIzquierdo()= nodo2.getDerecho();
+						// nodo2.getDerecho() = nodo;
+						// nodo = nodo2;
 					}
 					nodo.setFactorEquilibrio(0);
-					h = false;
+					crecimientoEnAltura = false;
 					break;
 				} // Fin switch
 
-			} // fin if(h == true)
-		} // fin if(x < (int) p.getInfo())
+			} // fin if(crecimientoEnAltura)
+		} // fin if(datos.compareTo(nodo.getDatos()) < 0)
 		else if (datos.compareTo(nodo.getDatos()) > 0) {
 			nodo.setDerecho(insertar((NodoArbol<T>) nodo.getDerecho(), datos));
-			if (h == true) {
+			if (crecimientoEnAltura == true) {
 				// Crecio la rama derecha
 
 				switch (nodo.getFactorEquilibrio()) {
@@ -82,36 +82,36 @@ public class ArbolAVL<T extends Comparable<T>> extends ArbolBinarioDeBusqueda<T>
 					break;
 				case 1:
 					// Reequilibrar
-					p1 = (NodoArbol<T>) nodo.getDerecho();
-					if (p1.getFactorEquilibrio() == 1) {
+					nodo1 = (NodoArbol<T>) nodo.getDerecho();
+					if (nodo1.getFactorEquilibrio() == 1) {
 						// Rotación derecha simple
-						nodo.setDerecho(p1.getIzquierdo());
-						p1.setIzquierdo(nodo);
+						nodo.setDerecho(nodo1.getIzquierdo());
+						nodo1.setIzquierdo(nodo);
 						nodo.setFactorEquilibrio(0);
-						nodo = p1;
+						nodo = nodo1;
 					} else {
 						// Rotación derecha doble
 
-						p2 = (NodoArbol<T>) p1.getIzquierdo();
-						p1.setIzquierdo(p2.getDerecho());
-						p2.setDerecho(p1);
-						nodo.setDerecho(p2.getIzquierdo());
-						p2.setIzquierdo(nodo);
-						nodo = p2;
+						nodo2 = (NodoArbol<T>) nodo1.getIzquierdo();
+						nodo1.setIzquierdo(nodo2.getDerecho());
+						nodo2.setDerecho(nodo1);
+						nodo.setDerecho(nodo2.getIzquierdo());
+						nodo2.setIzquierdo(nodo);
+						nodo = nodo2;
 
 					}
 					nodo.setFactorEquilibrio(0);
-					h = false;
+					crecimientoEnAltura = false;
 					break;
 				case -1:
 					nodo.setFactorEquilibrio(0);
-					h = false;
+					crecimientoEnAltura = false;
 					break;
 				}
 			}
 		} else {
 			// La clave ya existe no hago nada
-			h = false;
+			crecimientoEnAltura = false;
 		}
 
 		return nodo;

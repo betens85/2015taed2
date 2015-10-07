@@ -313,6 +313,32 @@ public class ArbolBinarioDeBusqueda<T extends Comparable<T>> implements IEstruct
         //Chequea si el nodo buscado esta en el subarbol derecho
         return obtenerAlturaDeNodo(nodo.getDerecho(), nodoBuscado, altura + 1);
     }
+    
+
+    /**
+     * Metodo que permite imprimir los nodos de un arbol por niveles
+     */
+    public void imprimirPorNiveles() {
+        int depth = calcularAltura(nodoRaiz);
+		for (int i = 1; i <= depth; i++) {
+            String levelNodes = imprimirPorNiveles(nodoRaiz, i);
+            System.out.print(levelNodes + "\n");
+        }
+    }
+
+	private String imprimirPorNiveles(NodoArbol<T> t, int level) {
+		if (t == null) {
+			return "";
+		}
+		if (level == 1) {
+			return t.getDatos().toString() + " ";
+		} else if (level > 1) {
+			String leftStr = imprimirPorNiveles(t.getIzquierdo(), level - 1);
+			String rightStr = imprimirPorNiveles(t.getDerecho(), level - 1);
+			return leftStr + rightStr;
+		} else 
+			return "";
+	}
 }
 
 

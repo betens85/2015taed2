@@ -149,9 +149,6 @@ public class Principal {
 
 	private static void menuPrincipalOpcion3(Scanner scanner) {
 		if (estructurasCargadas) {
-			// TODO hacer submenu que pregunte tipo estructura y dps el codigo a
-			// buscar
-			// codigo harcoded para prueba ==> 3
 			mostrarTituloSeparador("BUSCAR VALOR EN ESTRUCTURAS");
 			System.out.println("\n\t A - Lista Doble Enlazada");
 			System.out.println("\t B - Tabla Hash");
@@ -260,8 +257,7 @@ public class Principal {
 			mostrarTituloSeparador("REPRESENTACION DE ARBOL BINARIO DE BUSQUEDA");
 			ArbolBinarioDeBusqueda<Registro> abb = (ArbolBinarioDeBusqueda<Registro>) estructurasMap
 					.get(TipoEstructura.ABB);
-			//GraficadorArbol.printNode(abb.getNodoRaiz());
-			abb.printLevelOrder();
+			abb.imprimirPorNiveles();
 			System.out.println();
 			mostrarTituloSeparador("REPRESENTACION DE ARBOL AVL");
 			ArbolBinarioDeBusqueda<Registro> avl = (ArbolBinarioDeBusqueda<Registro>) estructurasMap
