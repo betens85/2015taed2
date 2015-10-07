@@ -27,7 +27,7 @@ public class Principal {
 
 	private static Map<TipoEstructura, Metricas> mapaMetricas = new HashMap<>();
 	private static Map<TipoEstructura, IEstructuraDeDatos<Registro>> estructurasMap = new HashMap<>();
-	private static String pathDirectorio = "/home/norberto/taed2";
+	private static String pathDirectorio;
 	private static boolean pathDirectorioCargado;
 	private static boolean estructurasCargadas;
 
@@ -41,7 +41,7 @@ public class Principal {
 				scanner = new Scanner(System.in);
 				mostrarMenuPrincipal();
 				opcion = scanner.nextInt();
-				resolverOpcionMenuPrincipal(opcion);
+				resolverOpcionMenuPrincipal(opcion, scanner);
 			} while (opcion != 0);
 		} catch (Exception ex) {
 			System.err.println("Ocurriò un error al procesar la opcion seleccionada.");
@@ -52,50 +52,7 @@ public class Principal {
 			}
 		}
 	}
-
-	private static void mostrarMenuPrincipal() {
-		System.out.println(" ");
-		System.out.println("========================================================");
-		System.out.println("|               MENU PRINCIPAL                         |");
-		System.out.println("========================================================");
-		System.out.println("|                                                      |");
-		System.out.println("| 1. Cargar Path de directorio                         |");
-		System.out.println("| 2. Cargar archivo CSV                                |");
-		System.out.println("| 3. Buscar Valor en estructuras                       |");
-		System.out.println("| 4. Consulta automatica de CSV                        |");
-		System.out.println("| 5. Mostrar Reporte                                   |");
-		System.out.println("| 6. Mostrar Arboles                                   |");
-		System.out.println("| 0. SALIR                                             |");
-		System.out.print("\nINGRESE UNA OPCION: ");
-	}
-
-	public static void resolverOpcionMenuPrincipal(int opcion) {
-		switch (opcion) {
-		case 1:
-			menuPrincipalOpcion1();
-			break;
-		case 2:
-			menuPrincipalOpcion2();
-			break;
-		case 3:
-			// TODO harcoded for testing purposal
-			menuPrincipalOpcion3(TipoEstructura.AAVL);
-			break;
-		case 4:
-			menuPrincipalOpcion4();
-			break;
-		case 5:
-			menuPrincipalOpcion5();
-			break;
-		case 6:
-			menuPrincipalOpcion6();
-			break;
-
-		default:
-			break;
-		}
-	}
-
+	
 	private static void inicializarMetricas() {
 		mapaMetricas.clear();
 		mapaMetricas.put(TipoEstructura.LISTA_DOB_ENLAZADA, new Metricas());
@@ -112,22 +69,71 @@ public class Principal {
 		estructurasMap.put(TipoEstructura.AAVL, new ArbolAVL<Registro>());
 	}
 
-	private static void menuPrincipalOpcion1() {
-		// TODO preguntar por path directorio y setear en variable
-		// 'pathDirectorio'
+	private static void mostrarMenuPrincipal() {
+		System.out.println(" ");
+		System.out.println("========================================================");
+		System.out.println("|               MENU PRINCIPAL                         |");
+		System.out.println("========================================================");
+		System.out.println(" Path directorio: " + ((pathDirectorio == null || pathDirectorio.isEmpty()) ? "No cargado" : pathDirectorio));
+		System.out.println("|                                                      |");
+		System.out.println("|                                                      |");
+		System.out.println("| 1. Cargar Path de directorio                         |");
+		System.out.println("| 2. Cargar archivo CSV                                |");
+		System.out.println("| 3. Buscar Valor en estructuras                       |");
+		System.out.println("| 4. Consulta automatica de CSV                        |");
+		System.out.println("| 5. Mostrar Reporte                                   |");
+		System.out.println("| 6. Mostrar Arboles                                   |");
+		System.out.println("| 0. SALIR                                             |");
+		System.out.print("\nINGRESE UNA OPCION: ");
+		System.out.println();
+	}
+
+	public static void resolverOpcionMenuPrincipal(int opcion, Scanner scanner) {
+		switch (opcion) {
+		case 1:
+			menuPrincipalOpcion1(scanner);
+			break;
+		case 2:
+			menuPrincipalOpcion2(scanner);
+			break;
+		case 3:
+			menuPrincipalOpcion3(scanner);
+			break;
+		case 4:
+			menuPrincipalOpcion4(scanner);
+			break;
+		case 5:
+			menuPrincipalOpcion5();
+			break;
+		case 6:
+			menuPrincipalOpcion6();
+			break;
+
+		default:
+			break;
+		}
+	}
+
+	private static void menuPrincipalOpcion1(Scanner scanner) {
 		mostrarTituloSeparador("CARGA DE PATH DIRECTORIO");
 		System.out.print("\nIngrese el path del directorio: ");
-		
+		do {
+			pathDirectorio = scanner.nextLine();
+		} while (pathDirectorio == null || pathDirectorio.trim().isEmpty());
 		pathDirectorioCargado = true;
 	}
 	
-	private static void menuPrincipalOpcion2() {
+	private static void menuPrincipalOpcion2(Scanner scanner) {
 		if (pathDirectorioCargado) {
-			// TODO controlar que este cargado path de directorio, sino esta
-			// cargado
-			// tirar excepcion o salir
-			// TODO datos.csv harcoded, deberia ser cargado por la consola
-			String fullPathArchivo = pathDirectorio + File.separator + "datos.csv";
+			
+			mostrarTituloSeparador("CARGA DE ARCHIVO CSV");
+			System.out.print("\nIngrese el nombre del archivo (ej. datos.csv): ");
+			String nombreArchivoCarga = null;
+			do {
+				nombreArchivoCarga = scanner.nextLine();
+			} while (nombreArchivoCarga == null || nombreArchivoCarga.isEmpty());
+			
+			String fullPathArchivo = pathDirectorio + File.separator + nombreArchivoCarga;
 			mostrarTituloSeparador("CARGA DE DATOS  - Archivo: " + fullPathArchivo);
 			inicializarEstructuras();
 			inicializarMetricas();
@@ -141,17 +147,37 @@ public class Principal {
 		}
 	}
 
-	private static void menuPrincipalOpcion3(TipoEstructura tipoEstructura) {
+	private static void menuPrincipalOpcion3(Scanner scanner) {
 		if (estructurasCargadas) {
 			// TODO hacer submenu que pregunte tipo estructura y dps el codigo a
 			// buscar
 			// codigo harcoded para prueba ==> 3
-			int codigoBuscado = 3;
+			mostrarTituloSeparador("BUSCAR VALOR EN ESTRUCTURAS");
+			System.out.println("\n\t A - Lista Doble Enlazada");
+			System.out.println("\t B - Tabla Hash");
+			System.out.println("\t C - Arbol Binario de Busqueda");
+			System.out.println("\t D - Arbol AVL\n");
+			System.out.print("\nSeleccione una estructura de datos: \n");
+			String seleccionEstructuraDatos = null;
+			do{
+				seleccionEstructuraDatos = scanner.nextLine();
+			}while(seleccionEstructuraDatos.isEmpty());
+			
+			TipoEstructura tipoEstructura = resolverTipoEstructuraDatos(seleccionEstructuraDatos);
+			
+			System.out.println();
+			System.out.print("Ingrese el codigo de busqueda: ");
+			Integer codigoBuscado =  null;
+			
+			do{
+				codigoBuscado = scanner.nextInt();
+			}while(codigoBuscado == null);
+			
 			IEstructuraDeDatos<Registro> estructuraDeDatos = estructurasMap.get(tipoEstructura);
 			Registro registro = estructuraDeDatos.buscar(new Registro(codigoBuscado, null));
 			System.out.println();
-			mostrarTituloSeparador("BUSQUEDA DE VALOR: " + codigoBuscado);
-			System.out.println("\t\t" + "Resultado: " + "Codigo: " + registro.getCodigo() + "\t Nombre: "
+			mostrarTituloSeparador("BUSQUEDA DE VALOR: " + codigoBuscado + "\t\tTipo ED: " + tipoEstructura);
+			System.out.println("\t\t" + "Resultado ==>" + "\tCodigo: " + registro.getCodigo() + "\t Nombre: "
 					+ registro.getNombreCompleto());
 		}
 		else{
@@ -159,11 +185,37 @@ public class Principal {
 		}
 	}
 
-	private static void menuPrincipalOpcion4() {
+	private static TipoEstructura resolverTipoEstructuraDatos(String seleccionEstructuraDatos) {
+		TipoEstructura tipoEstructura = null;
+		switch (seleccionEstructuraDatos) {
+		case "A":
+			tipoEstructura = TipoEstructura.LISTA_DOB_ENLAZADA;
+			break;
+		case "B":
+			tipoEstructura = TipoEstructura.TABLA_HASH;
+			break;
+		case "C":
+			tipoEstructura = TipoEstructura.ABB;
+			break;
+		case "D":
+			tipoEstructura = TipoEstructura.AAVL;
+			break;
+		default:
+			break;
+		}
+		return tipoEstructura;
+	}
+
+	private static void menuPrincipalOpcion4(Scanner scanner) {
 		if (estructurasCargadas) {
-			// TODO chequear si el directorio fue cargado
-			// TODO preguntar como se llama el archivo de consulta
-			String fullPathArchivo = pathDirectorio + File.separator + "consulta.csv";
+			mostrarTituloSeparador("CONSULTA AUTOMATICA");
+			System.out.print("\nIngrese el nombre del archivo (ej. consulta.csv): ");
+			String nombreArchivoConsulta = null;
+			do {
+				nombreArchivoConsulta = scanner.nextLine();
+			} while (nombreArchivoConsulta == null || nombreArchivoConsulta.isEmpty());
+			
+			String fullPathArchivo = pathDirectorio + File.separator + nombreArchivoConsulta;
 			System.out.println();
 			mostrarTituloSeparador("CONSULTA AUTOMATICA - archivo: " + fullPathArchivo);
 			estructurasMap.forEach((k, v) -> mapaMetricas.get(v.getTipoEstructura())
@@ -208,7 +260,8 @@ public class Principal {
 			mostrarTituloSeparador("REPRESENTACION DE ARBOL BINARIO DE BUSQUEDA");
 			ArbolBinarioDeBusqueda<Registro> abb = (ArbolBinarioDeBusqueda<Registro>) estructurasMap
 					.get(TipoEstructura.ABB);
-			GraficadorArbol.printNode(abb.getNodoRaiz());
+			//GraficadorArbol.printNode(abb.getNodoRaiz());
+			abb.printLevelOrder();
 			System.out.println();
 			mostrarTituloSeparador("REPRESENTACION DE ARBOL AVL");
 			ArbolBinarioDeBusqueda<Registro> avl = (ArbolBinarioDeBusqueda<Registro>) estructurasMap
