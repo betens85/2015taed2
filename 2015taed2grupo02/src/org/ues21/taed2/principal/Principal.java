@@ -25,6 +25,8 @@ import org.ues21.taed2.principal.GestorCSV.Registro;
  */
 public class Principal {
 
+	private static final String CONSULTA_CSV = "consulta.csv";
+	private static final String CARGA_CSV = "datos.csv";
 	private static Map<TipoEstructura, Metricas> mapaMetricas = new HashMap<>();
 	private static Map<TipoEstructura, IEstructuraDeDatos<Registro>> estructurasMap = new HashMap<>();
 	private static String pathDirectorio;
@@ -119,21 +121,13 @@ public class Principal {
 		System.out.print("\nIngrese el path del directorio: ");
 		do {
 			pathDirectorio = scanner.nextLine();
-		} while (pathDirectorio == null || pathDirectorio.trim().isEmpty());
+		} while (pathDirectorio.trim().isEmpty());
 		pathDirectorioCargado = true;
 	}
 	
 	private static void menuPrincipalOpcion2(Scanner scanner) {
 		if (pathDirectorioCargado) {
-			
-			mostrarTituloSeparador("CARGA DE ARCHIVO CSV");
-			System.out.print("\nIngrese el nombre del archivo (ej. datos.csv): ");
-			String nombreArchivoCarga = null;
-			do {
-				nombreArchivoCarga = scanner.nextLine();
-			} while (nombreArchivoCarga == null || nombreArchivoCarga.isEmpty());
-			
-			String fullPathArchivo = pathDirectorio + File.separator + nombreArchivoCarga;
+			String fullPathArchivo = pathDirectorio + File.separator + CARGA_CSV;
 			mostrarTituloSeparador("CARGA DE DATOS  - Archivo: " + fullPathArchivo);
 			inicializarEstructuras();
 			inicializarMetricas();
@@ -158,7 +152,7 @@ public class Principal {
 			String seleccionEstructuraDatos = null;
 			do{
 				seleccionEstructuraDatos = scanner.nextLine();
-			}while(seleccionEstructuraDatos.isEmpty());
+			}while(seleccionEstructuraDatos.trim().isEmpty());
 			
 			TipoEstructura tipoEstructura = resolverTipoEstructuraDatos(seleccionEstructuraDatos);
 			
@@ -171,11 +165,11 @@ public class Principal {
 			}while(codigoBuscado == null);
 			
 			IEstructuraDeDatos<Registro> estructuraDeDatos = estructurasMap.get(tipoEstructura);
-			Registro registro = estructuraDeDatos.buscar(new Registro(codigoBuscado, null));
+			Registro registroResultado = estructuraDeDatos.buscar(new Registro(codigoBuscado, ""));
 			System.out.println();
 			mostrarTituloSeparador("BUSQUEDA DE VALOR: " + codigoBuscado + "\t\tTipo ED: " + tipoEstructura);
-			System.out.println("\t\t" + "Resultado ==>" + "\tCodigo: " + registro.getCodigo() + "\t Nombre: "
-					+ registro.getNombreCompleto());
+			System.out.println("\t\t" + "Resultado ==>" + "\tCodigo: " + registroResultado.getCodigo() + "\t Nombre: "
+					+ registroResultado.getNombreCompleto());
 		}
 		else{
 			System.out.println("\n** Debe cargar las estructuras de datos (Menu principal Opcion 2) **");
@@ -205,14 +199,7 @@ public class Principal {
 
 	private static void menuPrincipalOpcion4(Scanner scanner) {
 		if (estructurasCargadas) {
-			mostrarTituloSeparador("CONSULTA AUTOMATICA");
-			System.out.print("\nIngrese el nombre del archivo (ej. consulta.csv): ");
-			String nombreArchivoConsulta = null;
-			do {
-				nombreArchivoConsulta = scanner.nextLine();
-			} while (nombreArchivoConsulta == null || nombreArchivoConsulta.isEmpty());
-			
-			String fullPathArchivo = pathDirectorio + File.separator + nombreArchivoConsulta;
+			String fullPathArchivo = pathDirectorio + File.separator + CONSULTA_CSV;
 			System.out.println();
 			mostrarTituloSeparador("CONSULTA AUTOMATICA - archivo: " + fullPathArchivo);
 			estructurasMap.forEach((k, v) -> mapaMetricas.get(v.getTipoEstructura())
