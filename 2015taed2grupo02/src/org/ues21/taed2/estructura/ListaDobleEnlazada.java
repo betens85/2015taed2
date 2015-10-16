@@ -73,7 +73,7 @@ public class ListaDobleEnlazada<T extends Comparable<T>> implements IEstructuraD
 
 		if (!estaVacia()) {
 			NodoLD<T> nodoAux = primero;
-			while (nodoAux.getSiguiente() != null) {
+			while (nodoAux != null) {
 				if (nodoAux.getDatos().compareTo(datos) == 0) {
 					return nodoAux;
 				}
@@ -94,7 +94,7 @@ public class ListaDobleEnlazada<T extends Comparable<T>> implements IEstructuraD
 
 		if (!estaVacia()) {
 			NodoLD<T> nodoAux = ultimo;
-			while (nodoAux.getAnterior() != null) {
+			while (nodoAux != null) {
 				if (nodoAux.getDatos().compareTo(datos) == 0) {
 					return nodoAux;
 				}
