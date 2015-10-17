@@ -1,12 +1,14 @@
 package org.ues21.taed2.estructura;
 
+import org.ues21.taed2.principal.GestorCSV.Codeable;
+
 /**
  * Representa la interfaz de una estructura de datos
  * 
  * @author grupo02
  *
  */
-public interface IEstructuraDeDatos<T extends Comparable<T>> {
+public interface IEstructuraDeDatos<T extends Comparable<T> & Codeable > {
 
 	/**
 	 * Permite la busqueda de informacion a partir de un codigo de busqueda
@@ -44,7 +46,7 @@ public interface IEstructuraDeDatos<T extends Comparable<T>> {
 	 *
 	 */
 	public static enum TipoEstructura {
-		LISTA_DOB_ENLAZADA("Lista Doble Enlazada"), TABLA_HASH("Tabla Hash"), ABB("Arbol Binario de Busqueda"), AAVL(
+		LISTA_SIMPLE("Lista Simple"), LISTA_DOB_ENLAZADA("Lista Doble Enlazada"), TABLA_HASH("Tabla Hash"), ABB("Arbol Binario de Busqueda"), AAVL(
 				"Arbol AVL");
 
 		private String descripcion;

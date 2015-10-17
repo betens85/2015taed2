@@ -1,13 +1,14 @@
 package org.ues21.taed2.estructura;
 
 import org.ues21.taed2.estructura.Nodo.NodoLD;
+import org.ues21.taed2.principal.GestorCSV.Codeable;
 
 /**
  * Clase que representa una lista doble enlazada
  * @author grupo02
  *
  */
-public class ListaDobleEnlazada<T extends Comparable<T>> implements IEstructuraDeDatos<T> {
+public class ListaDobleEnlazada<T extends Comparable<T> & Codeable> implements IEstructuraDeDatos<T> {
 	private NodoLD<T> primero;
 	private NodoLD<T> ultimo;
 

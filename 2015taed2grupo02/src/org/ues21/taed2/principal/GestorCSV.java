@@ -108,7 +108,7 @@ public final class GestorCSV {
 	 * @author grupo02
 	 *
 	 */
-	public static class Registro implements Comparable<Registro> {
+	public static class Registro implements Comparable<Registro>, Codeable {
 		private Integer codigo;
 		private String nombreCompleto;
 		
@@ -118,9 +118,6 @@ public final class GestorCSV {
 		}
 		public Integer getCodigo() {
 			return codigo;
-		}
-		public void setCodigo(Integer codigo) {
-			this.codigo = codigo;
 		}
 		public String getNombreCompleto() {
 			return nombreCompleto;
@@ -137,5 +134,9 @@ public final class GestorCSV {
 		public int compareTo(Registro r) {
 			return codigo.compareTo(r.getCodigo());
 		}
+	}
+	
+	public static interface Codeable {
+		Integer getCodigo();
 	}
 }

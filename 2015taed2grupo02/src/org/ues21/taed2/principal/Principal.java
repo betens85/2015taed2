@@ -5,10 +5,10 @@ package org.ues21.taed2.principal;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Scanner;
 
-import org.ues21.taed2.estructura.ArbolAVL;
 import org.ues21.taed2.estructura.ArbolBinarioDeBusqueda;
 import org.ues21.taed2.estructura.IEstructuraDeDatos;
 import org.ues21.taed2.estructura.IEstructuraDeDatos.Metricas;
@@ -45,7 +45,10 @@ public class Principal {
 				opcion = scanner.nextInt();
 				resolverOpcionMenuPrincipal(opcion, scanner);
 			} while (opcion != 0);
-		} catch (Exception ex) {
+		}catch(InputMismatchException ex) {
+			System.err.println("Ingrese una opcion valida. Revise el texto ingresado");
+		}
+		catch (Exception ex) {
 			System.err.println("Ocurriò un error al procesar la opcion seleccionada.");
 			ex.printStackTrace();
 		} finally {
@@ -66,9 +69,9 @@ public class Principal {
 	private static void inicializarEstructuras() {
 		estructurasMap.clear();
 		estructurasMap.put(TipoEstructura.LISTA_DOB_ENLAZADA, new ListaDobleEnlazada<Registro>());
-		estructurasMap.put(TipoEstructura.TABLA_HASH, new TablaHash<Registro>());
+		estructurasMap.put(TipoEstructura.TABLA_HASH, new TablaHash<Registro>(41));
 		estructurasMap.put(TipoEstructura.ABB, new ArbolBinarioDeBusqueda<Registro>());
-		estructurasMap.put(TipoEstructura.AAVL, new ArbolAVL<Registro>());
+		//estructurasMap.put(TipoEstructura.AAVL, new ArbolAVL<Registro>());
 	}
 
 	private static void mostrarMenuPrincipal() {
@@ -156,20 +159,35 @@ public class Principal {
 			
 			TipoEstructura tipoEstructura = resolverTipoEstructuraDatos(seleccionEstructuraDatos);
 			
+			if ( tipoEstructura == null) {
+				System.err.println("\nEl tipo de estructura seleccionado es incorrecto (" + seleccionEstructuraDatos + ")\n");
+				return ;
+			}
+			IEstructuraDeDatos<Registro> estructuraDeDatos = estructurasMap.get(tipoEstructura);
+			
 			System.out.println();
 			System.out.print("Ingrese el codigo de busqueda: ");
 			Integer codigoBuscado =  null;
 			
 			do{
-				codigoBuscado = scanner.nextInt();
-			}while(codigoBuscado == null);
+				try{ 
+					codigoBuscado = scanner.nextInt();
+				} catch (InputMismatchException ex) {
+					System.err.println("Debe ingresar un codigo de busqueda numerico. Reingrese el codigo de busqueda");
+					scanner.nextLine();
+					continue;
+				}
+			} while (codigoBuscado == null);
 			
-			IEstructuraDeDatos<Registro> estructuraDeDatos = estructurasMap.get(tipoEstructura);
+			Long tiempoInicio = System.currentTimeMillis();
 			Registro registroResultado = estructuraDeDatos.buscar(new Registro(codigoBuscado, ""));
+			Long tiempoTotalBusqueda = System.currentTimeMillis() - tiempoInicio;
+			
 			System.out.println();
 			mostrarTituloSeparador("BUSQUEDA DE VALOR: " + codigoBuscado + "\t\tTipo ED: " + tipoEstructura);
-			System.out.println("\t\t" + "Resultado ==>" + "\tCodigo: " + registroResultado.getCodigo() + "\t Nombre: "
-					+ registroResultado.getNombreCompleto());
+	
+			System.out.println("\t\t" + "Resultado ==>" + "\tCodigo: " + (registroResultado != null ? registroResultado.getCodigo() : "NO ENCONTRADO") + "\t Nombre: "
+					+ (registroResultado != null ? registroResultado.getNombreCompleto() : "NO ENCONTRADO") + "\tTiempo (ms): " + tiempoTotalBusqueda);
 		}
 		else{
 			System.out.println("\n** Debe cargar las estructuras de datos (Menu principal Opcion 2) **");
@@ -218,7 +236,7 @@ public class Principal {
 	private static void menuPrincipalOpcion5() {
 		if (estructurasCargadas) {
 			System.out.println();
-			mostrarTituloSeparador("REPORTE DE METRICAS DE ESTRUCTURA ");
+			mostrarTituloSeparador("REPORTE DE METRICAS DE ESTRUCTURA (tiempo en milisegundos)");
 			System.out.println();
 			System.out.println("Estructura                       Tiempo Insercion               Tiempo Consulta\n");
 			System.out.println(TipoEstructura.LISTA_DOB_ENLAZADA + "\t\t\t"
@@ -249,7 +267,7 @@ public class Principal {
 			mostrarTituloSeparador("REPRESENTACION DE ARBOL AVL");
 			ArbolBinarioDeBusqueda<Registro> avl = (ArbolBinarioDeBusqueda<Registro>) estructurasMap
 					.get(TipoEstructura.AAVL);
-			GraficadorArbol.printNode(avl.getNodoRaiz());
+			//GraficadorArbol.printNode(avl.getNodoRaiz());
 		}
 		else{
 			System.out.println("\n** Debe cargar las estructuras de datos (Menu principal Opcion 2) **");

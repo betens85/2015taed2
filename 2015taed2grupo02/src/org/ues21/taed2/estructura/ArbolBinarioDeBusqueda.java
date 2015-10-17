@@ -1,13 +1,14 @@
 package org.ues21.taed2.estructura;
 
 import org.ues21.taed2.estructura.Nodo.NodoArbol;
+import org.ues21.taed2.principal.GestorCSV.Codeable;
 
 /**
  * Clase que representa estructura y comportamiento de un arbol binario de busqueda
  * @author grupo02
  *
  */
-public class ArbolBinarioDeBusqueda<T extends Comparable<T>> implements IEstructuraDeDatos<T> {
+public class ArbolBinarioDeBusqueda<T extends Comparable<T> & Codeable> implements IEstructuraDeDatos<T> {
 	
 	protected NodoArbol<T> nodoRaiz;
 

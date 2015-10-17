@@ -73,14 +73,13 @@ public abstract class Nodo<T> {
 	 * Clase que representa un nodo de una lista doble enlazada
 	 * @author grupo02
 	 */
-	public static class NodoLD<T> extends Nodo<T> {
+	public static class NodoLD<T> extends NodoLS<T> {
 
 		public NodoLD(T datos) {
 			super(datos);
 		}
 
 		private NodoLD<T> anterior;
-		private NodoLD<T> siguiente;
 
 		public NodoLD<T> getAnterior() {
 			return anterior;
@@ -89,6 +88,19 @@ public abstract class Nodo<T> {
 		public void setAnterior(NodoLD<T> anterior) {
 			this.anterior = anterior;
 		}
+	}
+	
+	/**
+	 * Clase que representa un nodo de una lista doble enlazada
+	 * @author grupo02
+	 */
+	public static class NodoLS<T> extends Nodo<T> {
+
+		public NodoLS(T datos) {
+			super(datos);
+		}
+
+		private NodoLD<T> siguiente;
 
 		public NodoLD<T> getSiguiente() {
 			return siguiente;
