@@ -29,6 +29,7 @@ public class TablaHash<T extends Comparable<T> & Codeable> implements IEstructur
 	@Override
 	public void insertar(T datos) {
 		int h = h(datos);
+		items[h].insertar(datos);
 	}
 	
 	private int h(T datos) {

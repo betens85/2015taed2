@@ -35,7 +35,6 @@ public class Principal {
 
 	public static void main(String[] args) {
 		inicializarMetricas();
-		inicializarEstructuras();
 		Scanner scanner = null;
 		int opcion;
 		try {
@@ -66,10 +65,10 @@ public class Principal {
 		mapaMetricas.put(TipoEstructura.ABB, new Metricas());
 	}
 
-	private static void inicializarEstructuras() {
+	private static void inicializarEstructuras(int tamañoTablaHash) {
 		estructurasMap.clear();
 		estructurasMap.put(TipoEstructura.LISTA_DOB_ENLAZADA, new ListaDobleEnlazada<Registro>());
-		estructurasMap.put(TipoEstructura.TABLA_HASH, new TablaHash<Registro>(41));
+		estructurasMap.put(TipoEstructura.TABLA_HASH, new TablaHash<Registro>(tamañoTablaHash));
 		estructurasMap.put(TipoEstructura.ABB, new ArbolBinarioDeBusqueda<Registro>());
 		//estructurasMap.put(TipoEstructura.AAVL, new ArbolAVL<Registro>());
 	}
@@ -132,7 +131,12 @@ public class Principal {
 		if (pathDirectorioCargado) {
 			String fullPathArchivo = pathDirectorio + File.separator + CARGA_CSV;
 			mostrarTituloSeparador("CARGA DE DATOS  - Archivo: " + fullPathArchivo);
-			inicializarEstructuras();
+			System.out.print("\nIngrese el tamaño de tabla hash: \n");
+			Integer tamañoTablaHash = null;
+			do{
+				tamañoTablaHash = scanner.nextInt();
+			}while(tamañoTablaHash == null);
+			inicializarEstructuras(tamañoTablaHash);
 			inicializarMetricas();
 
 			estructurasMap.forEach((k, v) -> mapaMetricas.get(v.getTipoEstructura())
@@ -265,9 +269,9 @@ public class Principal {
 			abb.imprimirPorNiveles();
 			System.out.println();
 			mostrarTituloSeparador("REPRESENTACION DE ARBOL AVL");
-			ArbolBinarioDeBusqueda<Registro> avl = (ArbolBinarioDeBusqueda<Registro>) estructurasMap
-					.get(TipoEstructura.AAVL);
-			//GraficadorArbol.printNode(avl.getNodoRaiz());
+//			ArbolBinarioDeBusqueda<Registro> avl = (ArbolBinarioDeBusqueda<Registro>) estructurasMap
+//					.get(TipoEstructura.AAVL);
+//			//GraficadorArbol.printNode(avl.getNodoRaiz());
 		}
 		else{
 			System.out.println("\n** Debe cargar las estructuras de datos (Menu principal Opcion 2) **");

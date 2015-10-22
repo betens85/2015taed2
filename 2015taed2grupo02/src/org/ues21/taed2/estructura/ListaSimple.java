@@ -1,6 +1,5 @@
 package org.ues21.taed2.estructura;
 
-import org.ues21.taed2.estructura.Nodo.NodoLD;
 import org.ues21.taed2.estructura.Nodo.NodoLS;
 import org.ues21.taed2.principal.GestorCSV.Codeable;
 
@@ -10,21 +9,34 @@ import org.ues21.taed2.principal.GestorCSV.Codeable;
  *
  */
 public class ListaSimple<T extends Comparable<T> & Codeable> implements IEstructuraDeDatos<T> {
-	private NodoLD<T> frente;
+	private NodoLS<T> frente;
 
 	@Override
 	public T buscar(T datos) {
 		NodoLS<T> resultado = null;
+		
+		if (!estaVacia()) {
+			NodoLS<T> nodoAux = frente;
+			while(nodoAux != null && resultado == null) {
+				if(nodoAux.getDatos().compareTo(datos) == 0) {
+					resultado = nodoAux;
+				}
+				nodoAux = nodoAux.getSiguiente();
+			}
+		}
+		
 		return resultado != null ? resultado.getDatos() : null;
 	}
 
 	@Override
 	public void insertar(T datos) {
-		insertarAlFrente(datos);
+		insertarEnFrente(datos);
 	}
 
-	private void insertarAlFrente(T datos) {
-		// TODO Auto-generated method stub
+	private void insertarEnFrente(T datos) {
+		NodoLS<T> nodo = new NodoLS<>(datos);
+		nodo.setSiguiente(this.frente);
+		this.frente = nodo;
 	}
 
 	@Override
