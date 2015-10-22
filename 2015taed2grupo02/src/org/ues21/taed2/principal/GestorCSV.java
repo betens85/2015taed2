@@ -41,9 +41,13 @@ public final class GestorCSV {
 				estructuraDeDatos.insertar(new Registro(new Integer(campos[0]), campos[1]));
 			}
 			System.out.println("\t" + estructuraDeDatos.getTipoEstructura() + " =====> carga exitosa");
-		}catch (IOException ex) {
+		}
+		catch (IOException ex) {
 			System.err.println("Ocurrio una excepcion al procesar el archivo: " + ex.getMessage());
-		} finally {
+		}
+		catch (Exception ex) {
+			System.err.println("Ocurrio una excepcion al cargar las estructuras de datos: " + ex.getMessage());
+		}finally {
 			if (scanner != null) {
 				scanner.close();
 			}

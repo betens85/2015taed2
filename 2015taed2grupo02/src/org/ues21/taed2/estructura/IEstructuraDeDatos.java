@@ -24,7 +24,7 @@ public interface IEstructuraDeDatos<T extends Comparable<T> & Codeable > {
 	 * @param datos
 	 *            los datos de la entidad a ser insertada
 	 */
-	void insertar(T datos);
+	void insertar(T datos) throws Exception;
 
 	/**
 	 * Devuelve el tipo de estructura

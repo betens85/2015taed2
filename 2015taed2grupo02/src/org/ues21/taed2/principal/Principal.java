@@ -9,6 +9,7 @@ import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.ues21.taed2.estructura.ArbolAVL;
 import org.ues21.taed2.estructura.ArbolBinarioDeBusqueda;
 import org.ues21.taed2.estructura.IEstructuraDeDatos;
 import org.ues21.taed2.estructura.IEstructuraDeDatos.Metricas;
@@ -70,7 +71,7 @@ public class Principal {
 		estructurasMap.put(TipoEstructura.LISTA_DOB_ENLAZADA, new ListaDobleEnlazada<Registro>());
 		estructurasMap.put(TipoEstructura.TABLA_HASH, new TablaHash<Registro>(tamañoTablaHash));
 		estructurasMap.put(TipoEstructura.ABB, new ArbolBinarioDeBusqueda<Registro>());
-		//estructurasMap.put(TipoEstructura.AAVL, new ArbolAVL<Registro>());
+		estructurasMap.put(TipoEstructura.AAVL, new ArbolAVL<Registro>());
 	}
 
 	private static void mostrarMenuPrincipal() {
@@ -269,9 +270,9 @@ public class Principal {
 			abb.imprimirPorNiveles();
 			System.out.println();
 			mostrarTituloSeparador("REPRESENTACION DE ARBOL AVL");
-//			ArbolBinarioDeBusqueda<Registro> avl = (ArbolBinarioDeBusqueda<Registro>) estructurasMap
-//					.get(TipoEstructura.AAVL);
-//			//GraficadorArbol.printNode(avl.getNodoRaiz());
+			ArbolBinarioDeBusqueda<Registro> avl = (ArbolBinarioDeBusqueda<Registro>) estructurasMap
+					.get(TipoEstructura.AAVL);
+			GraficadorArbol.printNode(avl.getNodoRaiz());
 		}
 		else{
 			System.out.println("\n** Debe cargar las estructuras de datos (Menu principal Opcion 2) **");

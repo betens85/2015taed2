@@ -19,7 +19,7 @@ public class ArbolBinarioDeBusqueda<T extends Comparable<T> & Codeable> implemen
 	}
 
 	@Override
-	public void insertar(T datos) {
+	public void insertar(T datos) throws Exception {
 		if (estaVacia()) {
             this.nodoRaiz = new NodoArbol<>(datos);
         } else {
