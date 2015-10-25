@@ -40,7 +40,7 @@ public final class GestorCSV {
 				campos = scanner.nextLine().split(",");
 				estructuraDeDatos.insertar(new Registro(new Integer(campos[0]), campos[1]));
 			}
-			System.out.println("\t" + estructuraDeDatos.getTipoEstructura() + " =====> carga exitosa");
+			System.out.println("\t" + estructuraDeDatos.getTipoEstructura() + " =====> carga exitosa (" + estructuraDeDatos.getCantidadNodos() +" registros)");
 		}
 		catch (IOException ex) {
 			System.err.println("Ocurrio una excepcion al procesar el archivo: " + ex.getMessage());

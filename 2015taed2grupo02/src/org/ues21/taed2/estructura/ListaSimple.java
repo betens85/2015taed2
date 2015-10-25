@@ -12,6 +12,7 @@ import org.ues21.taed2.principal.GestorCSV.Codeable;
  */
 public class ListaSimple<T extends Comparable<T> & Codeable> implements IEstructuraDeDatos<T> {
 	private NodoLS<T> frente;
+	private int cantidadNodos;
 
 	@Override
 	public T buscar(T datos) {
@@ -33,6 +34,7 @@ public class ListaSimple<T extends Comparable<T> & Codeable> implements IEstruct
 	@Override
 	public void insertar(T datos) {
 		insertarEnFrente(datos);
+		this.cantidadNodos++;
 	}
 
 	private void insertarEnFrente(T datos) {
@@ -49,5 +51,10 @@ public class ListaSimple<T extends Comparable<T> & Codeable> implements IEstruct
 	@Override
 	public TipoEstructura getTipoEstructura() {
 		return TipoEstructura.LISTA_SIMPLE;
+	}
+
+	@Override
+	public int getCantidadNodos() {
+		return cantidadNodos;
 	}
 }

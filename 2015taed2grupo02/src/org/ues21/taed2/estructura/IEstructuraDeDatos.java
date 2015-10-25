@@ -39,6 +39,13 @@ public interface IEstructuraDeDatos<T extends Comparable<T> & Codeable > {
 	 * @return si esta vacia o no
 	 */
 	boolean estaVacia();
+	
+	/**
+	 * Metodo que retorna la cantidad de nodos que forman parte de la estructura
+	 * de datos.
+	 * @return la cantidad de nodos
+	 */
+	int getCantidadNodos();
 
 	/**
 	 * Representa un enumeracion de los tipos de estructuras

@@ -17,6 +17,7 @@ public class TablaHash<T extends Comparable<T> & Codeable> implements IEstructur
 	private ListaSimple<T> [] items;
 	private FuncionHash<T> funcionHash;
 	private int colisiones;
+	private int cantidadNodos;
 
 	public TablaHash(int tamaño, FuncionHash<T> funcionHash) {
 		this.tamaño = tamaño;
@@ -38,6 +39,7 @@ public class TablaHash<T extends Comparable<T> & Codeable> implements IEstructur
 	public void insertar(T datos) {
 		int h = h(datos);
 		items[h].insertar(datos);
+		cantidadNodos++;
 	}
 	
 	private int h(T datos) {
@@ -68,5 +70,10 @@ public class TablaHash<T extends Comparable<T> & Codeable> implements IEstructur
 	
 	public int getColisiones() {
 		return colisiones;
+	}
+	
+	@Override
+	public int getCantidadNodos() {
+		return cantidadNodos;
 	}
 }

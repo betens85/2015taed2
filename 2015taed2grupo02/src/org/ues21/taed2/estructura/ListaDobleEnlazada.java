@@ -13,6 +13,7 @@ import org.ues21.taed2.principal.GestorCSV.Codeable;
 public class ListaDobleEnlazada<T extends Comparable<T> & Codeable> implements IEstructuraDeDatos<T> {
 	private NodoLD<T> primero;
 	private NodoLD<T> ultimo;
+	private int cantidadNodos;
 
 	@Override
 	public T buscar(T datos) {
@@ -23,6 +24,7 @@ public class ListaDobleEnlazada<T extends Comparable<T> & Codeable> implements I
 	@Override
 	public void insertar(T datos) {
 		insertarAlFinal(datos);
+		cantidadNodos++;
 	}
 
 	@Override
@@ -124,5 +126,10 @@ public class ListaDobleEnlazada<T extends Comparable<T> & Codeable> implements I
 	@Override
 	public TipoEstructura getTipoEstructura() {
 		return TipoEstructura.LISTA_DOB_ENLAZADA;
+	}
+
+	@Override
+	public int getCantidadNodos() {
+		return cantidadNodos;
 	}
 }

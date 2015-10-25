@@ -14,6 +14,7 @@ import org.ues21.taed2.principal.GestorCSV.Codeable;
 public class ArbolBinarioDeBusqueda<T extends Comparable<T> & Codeable> implements IEstructuraDeDatos<T> {
 	
 	protected NodoArbol<T> nodoRaiz;
+	protected int cantidadNodos;
 	private static final String BLANCO = ".";
 
 	@Override
@@ -29,6 +30,7 @@ public class ArbolBinarioDeBusqueda<T extends Comparable<T> & Codeable> implemen
         } else {
             insertar(datos, this.nodoRaiz);
         }
+		cantidadNodos++;
 	}
 
 	@Override
@@ -39,6 +41,11 @@ public class ArbolBinarioDeBusqueda<T extends Comparable<T> & Codeable> implemen
 	@Override
 	public boolean estaVacia() {
 		return nodoRaiz == null;
+	}
+	
+	@Override
+	public int getCantidadNodos() {
+		return cantidadNodos;
 	}
 	
 	public NodoArbol<T> getNodoRaiz() {

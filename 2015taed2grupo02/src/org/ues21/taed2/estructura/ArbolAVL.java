@@ -17,6 +17,7 @@ public class ArbolAVL<T extends Comparable<T> & Codeable> extends ArbolBinarioDe
 	public void insertar(T datos) throws Exception {
 		Boolean h = Boolean.FALSE;
 		nodoRaiz = insertar(nodoRaiz, datos, h);
+		cantidadNodos++;
 	}
 
 	@Override
