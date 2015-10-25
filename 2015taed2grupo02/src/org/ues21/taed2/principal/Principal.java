@@ -54,19 +54,24 @@ public class Principal {
 		inicializarMetricas();
 
 		Scanner scanner = null;
-		int opcion;
+		int opcion = 0;
 		try {
 			do {
 				scanner = new Scanner(System.in);
 				mostrarMenuPrincipal();
-				opcion = scanner.nextInt();
-				resolverOpcionMenuPrincipal(opcion, scanner);
-			} while (opcion != 0);
+				if(scanner.hasNextInt()){
+					opcion = scanner.nextInt();
+					resolverOpcionMenuPrincipal(opcion, scanner);
+				}else{
+					System.err.println("* Ingrese un numero entero. Revise el texto ingresado");
+				}
+				
+			} while (opcion != 9);
 		}catch(InputMismatchException ex) {
-			System.err.println("Ingrese una opcion valida. Revise el texto ingresado");
+			System.err.println("* Ingrese un numero entero. Revise el texto ingresado");
 		}
 		catch (Exception ex) {
-			System.err.println("Ocurriò un error al procesar la opcion seleccionada.");
+			System.err.println("* Ocurriò un error al procesar la opcion seleccionada.");
 			ex.printStackTrace();
 		} finally {
 			if (scanner != null) {
@@ -126,7 +131,7 @@ public class Principal {
 		System.out.println("| 4. Consulta automatica de CSV                        |");
 		System.out.println("| 5. Mostrar Reporte                                   |");
 		System.out.println("| 6. Mostrar Arboles                                   |");
-		System.out.println("| 0. SALIR                                             |");
+		System.out.println("| 9. SALIR                                             |");
 		System.out.print("\nINGRESE UNA OPCION: ");
 		System.out.println();
 	}
@@ -170,13 +175,17 @@ public class Principal {
 		if (pathDirectorioCargado) {
 			String fullPathArchivo = pathDirectorio + File.separator + CARGA_CSV;
 			mostrarTituloSeparador("CARGA DE DATOS  - Archivo: " + fullPathArchivo);
-			System.out.print("\nIngrese el tamaño de tabla hash: \n");
+			System.out.print("\n- Ingrese el tamaño de tabla hash: \n");
 			Integer tamañoTablaHash = null;
 			do{
+				if (!scanner.hasNextInt()) {
+					System.err.println("* El tamaño de tabla hash debe ser numerico.");
+					return;
+				}
 				tamañoTablaHash = scanner.nextInt();
 			}while(tamañoTablaHash == null);
 			
-			System.out.println("Seleccione una funcion hash a utilizar");
+			System.out.println("- Seleccione una funcion hash a utilizar");
 			System.out.println("\n\t A - Funcion Modulo");
 			System.out.println("\t B - Funcion Multiplicacion");
 			System.out.print("\nSeleccione una funcion hash: \n");
@@ -188,7 +197,7 @@ public class Principal {
 			
 			FuncionHash<Registro> funcionHash = funcionesHashMap.get(seleccionFuncionHash);	
 			
-			if ( funcionHash == null) {
+			if (funcionHash == null) {
 				System.err.println("\nEl tipo de funcion hash seleccionada no existe (" + seleccionFuncionHash + ")\n");
 				System.out.println(" ");
 				return ;
