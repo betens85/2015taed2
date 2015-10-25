@@ -37,13 +37,20 @@ public class Principal {
 	private static Map<TipoEstructura, Metricas> mapaMetricas = new HashMap<>();
 	private static Map<TipoEstructura, IEstructuraDeDatos<Registro>> estructurasMap = new HashMap<>();
 	private static Map<String, FuncionHash<Registro>> funcionesHashMap = new HashMap<>();
+	private static Map<String, TipoEstructura> tiposEstructurasMap = new HashMap<>();
 	private static String pathDirectorio;
 	private static boolean pathDirectorioCargado;
 	private static boolean estructurasCargadas;
 
+	/**
+	 * Metodo principal que inicio a la ejecucion del programa
+	 * @param args argumentos opcionales
+	 */
 	public static void main(String[] args) {
 		inicializarFuncionesHash();
+		inicializarTiposEstructuras();
 		inicializarMetricas();
+
 		Scanner scanner = null;
 		int opcion;
 		try {
@@ -66,6 +73,9 @@ public class Principal {
 		}
 	}
 	
+	/**
+	 * Inicializa los contenedores de metricas por estructuras de datos
+	 */
 	private static void inicializarMetricas() {
 		mapaMetricas.clear();
 		mapaMetricas.put(TipoEstructura.LISTA_DOB_ENLAZADA, new Metricas());
@@ -82,11 +92,24 @@ public class Principal {
 		estructurasMap.put(TipoEstructura.AAVL, new ArbolAVL<Registro>());
 	}
 	
+	/**
+	 * Inicializa las funciones hash posibles de ser seleccionadas y asignadas a una tabla hash.
+	 */
 	private static void inicializarFuncionesHash() {
 		funcionesHashMap.put("A", new FuncionHashModulo<>());
 		funcionesHashMap.put("B", new FuncionHashMultiplicacion<>());
 	}
-
+	
+	/**
+	 * Inicializa los tipos de estructuras a ser seleccionadas y utilizadas para busqueda.
+	 */
+	private static void inicializarTiposEstructuras() {
+		tiposEstructurasMap.put("A", TipoEstructura.LISTA_DOB_ENLAZADA);
+		tiposEstructurasMap.put("B", TipoEstructura.TABLA_HASH);
+		tiposEstructurasMap.put("C", TipoEstructura.ABB);
+		tiposEstructurasMap.put("D", TipoEstructura.AAVL);
+	}
+	
 	private static void mostrarMenuPrincipal() {
 		System.out.println(" ");
 		System.out.println("========================================================");
@@ -194,7 +217,7 @@ public class Principal {
 				seleccionEstructuraDatos = scanner.nextLine();
 			}while(seleccionEstructuraDatos.trim().isEmpty());
 			
-			TipoEstructura tipoEstructura = resolverTipoEstructuraDatos(seleccionEstructuraDatos);
+			TipoEstructura tipoEstructura = tiposEstructurasMap.get(seleccionEstructuraDatos);
 			
 			if ( tipoEstructura == null) {
 				System.err.println("\nEl tipo de estructura seleccionado es incorrecto (" + seleccionEstructuraDatos + ")\n");
@@ -229,27 +252,6 @@ public class Principal {
 		else{
 			System.out.println("\n** Debe cargar las estructuras de datos (Menu principal Opcion 2) **");
 		}
-	}
-
-	private static TipoEstructura resolverTipoEstructuraDatos(String seleccionEstructuraDatos) {
-		TipoEstructura tipoEstructura = null;
-		switch (seleccionEstructuraDatos) {
-		case "A":
-			tipoEstructura = TipoEstructura.LISTA_DOB_ENLAZADA;
-			break;
-		case "B":
-			tipoEstructura = TipoEstructura.TABLA_HASH;
-			break;
-		case "C":
-			tipoEstructura = TipoEstructura.ABB;
-			break;
-		case "D":
-			tipoEstructura = TipoEstructura.AAVL;
-			break;
-		default:
-			break;
-		}
-		return tipoEstructura;
 	}
 
 	private static void menuPrincipalOpcion4(Scanner scanner) {
