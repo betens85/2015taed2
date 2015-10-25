@@ -7,7 +7,9 @@ import org.ues21.taed2.principal.GestorCSV.Codeable;
  * Clase que representa estructura y comportamiento de un arbol AVL
  * 
  * @author grupo02
- *
+ * 
+ * @param <T>
+ *            representacion parametrizada generica de los datos que contendra
  */
 public class ArbolAVL<T extends Comparable<T> & Codeable> extends ArbolBinarioDeBusqueda<T> {
 

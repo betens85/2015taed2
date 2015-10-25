@@ -6,7 +6,8 @@ import org.ues21.taed2.principal.GestorCSV.Codeable;
  * Representa la interfaz de una estructura de datos
  * 
  * @author grupo02
- *
+ * @param <T>
+ *            representacion parametrizada generica de los datos que contendra
  */
 public interface IEstructuraDeDatos<T extends Comparable<T> & Codeable > {
 

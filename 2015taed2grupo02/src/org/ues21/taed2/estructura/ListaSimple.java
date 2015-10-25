@@ -5,8 +5,10 @@ import org.ues21.taed2.principal.GestorCSV.Codeable;
 
 /**
  * Clase que representa una lista simple
+ * 
  * @author grupo02
- *
+ * @param <T>
+ *            representacion parametrizada generica de los datos que contendra
  */
 public class ListaSimple<T extends Comparable<T> & Codeable> implements IEstructuraDeDatos<T> {
 	private NodoLS<T> frente;

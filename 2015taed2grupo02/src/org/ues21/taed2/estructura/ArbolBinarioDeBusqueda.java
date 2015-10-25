@@ -4,13 +4,17 @@ import org.ues21.taed2.estructura.Nodo.NodoArbol;
 import org.ues21.taed2.principal.GestorCSV.Codeable;
 
 /**
- * Clase que representa estructura y comportamiento de un arbol binario de busqueda
+ * Clase que representa estructura y comportamiento de un arbol binario de
+ * busqueda
+ * 
  * @author grupo02
- *
+ * @param <T>
+ *            representacion parametrizada generica de los datos que contendra
  */
 public class ArbolBinarioDeBusqueda<T extends Comparable<T> & Codeable> implements IEstructuraDeDatos<T> {
 	
 	protected NodoArbol<T> nodoRaiz;
+	private static final String BLANCO = ".";
 
 	@Override
 	public T buscar(T datos) {
@@ -314,31 +318,37 @@ public class ArbolBinarioDeBusqueda<T extends Comparable<T> & Codeable> implemen
         //Chequea si el nodo buscado esta en el subarbol derecho
         return obtenerAlturaDeNodo(nodo.getDerecho(), nodoBuscado, altura + 1);
     }
-    
-
-    /**
-     * Metodo que permite imprimir los nodos de un arbol por niveles
-     */
-    public void imprimirPorNiveles() {
-        int depth = calcularAltura(nodoRaiz);
-		for (int i = 1; i <= depth; i++) {
-            String levelNodes = imprimirPorNiveles(nodoRaiz, i);
-            System.out.print(levelNodes + "\n");
-        }
-    }
-
-	private String imprimirPorNiveles(NodoArbol<T> t, int level) {
-		if (t == null) {
-			return "";
+	
+	public String imprimirArbol() {
+	    int alturaArbol = calcularAlturaDeArbol();
+	    int anchoTotal = alturaArbol * 2 * 2 * 5 ;
+		StringBuilder [] niveles = new StringBuilder[alturaArbol];
+		for(int i = 0; i < alturaArbol; i++) {
+			niveles[i] = new StringBuilder();
+			for( int j = 0; j < anchoTotal; j++) {
+				niveles[i].append(BLANCO);
+			}
 		}
-		if (level == 1) {
-			return t.getDatos().toString() + " ";
-		} else if (level > 1) {
-			String leftStr = imprimirPorNiveles(t.getIzquierdo(), level - 1);
-			String rightStr = imprimirPorNiveles(t.getDerecho(), level - 1);
-			return leftStr + rightStr;
-		} else 
-			return "";
+		int posicionRaiz = (anchoTotal - 5) / 2;
+		printArbol(nodoRaiz, posicionRaiz, niveles, 0);
+		
+		StringBuilder resultado = new StringBuilder();
+		
+		for (StringBuilder stringBuilder : niveles) {
+			resultado.append(stringBuilder.toString());
+			resultado.append("\n");
+		}
+		
+		return resultado.toString();
+	}
+
+	private void printArbol(NodoArbol<T> nodo, int posicion, StringBuilder[] niveles, int nivelNodo) {
+		String codigo = String.valueOf((nodo == null) ? "     " : nodo.getDatos().getCodigo());
+		System.out.println("nivel nodo= " + nivelNodo +" 1par = " + posicion + "   2dopar= " + (posicion + 5) + " 3erpar=  " + codigo.length() + " valorcodigo: " + codigo);
+		niveles[nivelNodo].replace(posicion, (posicion + 5), codigo);
+
+		printArbol((nodo==null) ? null : nodo.getIzquierdo(), (posicion - 5 - 1) <= 0 ? 0 : posicion - 5 - 1, niveles, nivelNodo + 1);
+		printArbol((nodo==null) ? null : nodo.getDerecho(), (posicion - 5 - 1) <= 0 ? 0 : posicion + 5 + 1, niveles, nivelNodo + 1);
 	}
 }
 

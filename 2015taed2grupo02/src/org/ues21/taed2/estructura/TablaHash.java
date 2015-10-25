@@ -1,22 +1,30 @@
 package org.ues21.taed2.estructura;
 
+import org.ues21.taed2.estructura.hash.FuncionHash;
 import org.ues21.taed2.principal.GestorCSV.Codeable;
 
 /**
  * Clase que representa una estructura de datos de tipo tabla hash
+ * 
  * @author grupo02
+ * 
+ * @param <T>
+ *            representa la clase parametrizada
  */
 public class TablaHash<T extends Comparable<T> & Codeable> implements IEstructuraDeDatos<T> {
 
 	private int tamaño;
 	private ListaSimple<T> [] items;
+	private FuncionHash<T> funcionHash;
+	private int colisiones;
 
-	public TablaHash(int tamaño) {
+	public TablaHash(int tamaño, FuncionHash<T> funcionHash) {
 		this.tamaño = tamaño;
 		this.items = new ListaSimple[tamaño];
 		for(int i= 0; i< tamaño; i++) {
 			items[i] = new ListaSimple<>();
 		}
+		this.funcionHash = funcionHash;
 	}
 	
 	@Override
@@ -33,8 +41,7 @@ public class TablaHash<T extends Comparable<T> & Codeable> implements IEstructur
 	}
 	
 	private int h(T datos) {
-		Integer k = datos.getCodigo();
-		return k % this.tamaño;
+		return this.funcionHash.calcularHash(this, datos);
 	}
 
 	@Override
@@ -45,5 +52,21 @@ public class TablaHash<T extends Comparable<T> & Codeable> implements IEstructur
 	@Override
 	public boolean estaVacia() {
 		return false;
+	}
+	
+	public int getTamaño() {
+		return tamaño;
+	}
+	
+	public void setFuncionHash(FuncionHash<T> funcionHash) {
+		this.funcionHash = funcionHash;
+	}
+	
+	public FuncionHash<T> getFuncionHash() {
+		return funcionHash;
+	}
+	
+	public int getColisiones() {
+		return colisiones;
 	}
 }

@@ -4,6 +4,9 @@
 package org.ues21.taed2.principal;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Map;
@@ -14,6 +17,9 @@ import org.ues21.taed2.estructura.ArbolBinarioDeBusqueda;
 import org.ues21.taed2.estructura.IEstructuraDeDatos;
 import org.ues21.taed2.estructura.IEstructuraDeDatos.Metricas;
 import org.ues21.taed2.estructura.IEstructuraDeDatos.TipoEstructura;
+import org.ues21.taed2.estructura.hash.FuncionHash;
+import org.ues21.taed2.estructura.hash.FuncionHashModulo;
+import org.ues21.taed2.estructura.hash.FuncionHashMultiplicacion;
 import org.ues21.taed2.estructura.ListaDobleEnlazada;
 import org.ues21.taed2.estructura.TablaHash;
 import org.ues21.taed2.principal.GestorCSV.Registro;
@@ -30,11 +36,13 @@ public class Principal {
 	private static final String CARGA_CSV = "datos.csv";
 	private static Map<TipoEstructura, Metricas> mapaMetricas = new HashMap<>();
 	private static Map<TipoEstructura, IEstructuraDeDatos<Registro>> estructurasMap = new HashMap<>();
+	private static Map<String, FuncionHash<Registro>> funcionesHashMap = new HashMap<>();
 	private static String pathDirectorio;
 	private static boolean pathDirectorioCargado;
 	private static boolean estructurasCargadas;
 
 	public static void main(String[] args) {
+		inicializarFuncionesHash();
 		inicializarMetricas();
 		Scanner scanner = null;
 		int opcion;
@@ -66,12 +74,17 @@ public class Principal {
 		mapaMetricas.put(TipoEstructura.ABB, new Metricas());
 	}
 
-	private static void inicializarEstructuras(int tamañoTablaHash) {
+	private static void inicializarEstructuras(int tamañoTablaHash, FuncionHash<Registro> funcionHash) {
 		estructurasMap.clear();
 		estructurasMap.put(TipoEstructura.LISTA_DOB_ENLAZADA, new ListaDobleEnlazada<Registro>());
-		estructurasMap.put(TipoEstructura.TABLA_HASH, new TablaHash<Registro>(tamañoTablaHash));
+		estructurasMap.put(TipoEstructura.TABLA_HASH, new TablaHash<Registro>(tamañoTablaHash, funcionHash));
 		estructurasMap.put(TipoEstructura.ABB, new ArbolBinarioDeBusqueda<Registro>());
 		estructurasMap.put(TipoEstructura.AAVL, new ArbolAVL<Registro>());
+	}
+	
+	private static void inicializarFuncionesHash() {
+		funcionesHashMap.put("A", new FuncionHashModulo<>());
+		funcionesHashMap.put("B", new FuncionHashMultiplicacion<>());
 	}
 
 	private static void mostrarMenuPrincipal() {
@@ -137,7 +150,26 @@ public class Principal {
 			do{
 				tamañoTablaHash = scanner.nextInt();
 			}while(tamañoTablaHash == null);
-			inicializarEstructuras(tamañoTablaHash);
+			
+			System.out.println("Seleccione una funcion hash a utilizar");
+			System.out.println("\n\t A - Funcion Modulo");
+			System.out.println("\t B - Funcion Multiplicacion");
+			System.out.print("\nSeleccione una funcion hash: \n");
+			
+			String seleccionFuncionHash = null;
+			do{
+				seleccionFuncionHash = scanner.nextLine();
+			}while(seleccionFuncionHash.trim().isEmpty());
+			
+			FuncionHash<Registro> funcionHash = funcionesHashMap.get(seleccionFuncionHash);	
+			
+			if ( funcionHash == null) {
+				System.err.println("\nEl tipo de funcion hash seleccionada no existe (" + seleccionFuncionHash + ")\n");
+				System.out.println(" ");
+				return ;
+			}
+			
+			inicializarEstructuras(tamañoTablaHash, funcionHash);
 			inicializarMetricas();
 
 			estructurasMap.forEach((k, v) -> mapaMetricas.get(v.getTipoEstructura())
@@ -255,6 +287,9 @@ public class Principal {
 			System.out.println(
 					TipoEstructura.AAVL + "\t\t\t\t" + mapaMetricas.get(TipoEstructura.AAVL).getTiempoInsercion()
 							+ "\t\t\t\t" + mapaMetricas.get(TipoEstructura.AAVL).getTiempoConsulta());
+			System.out.println(" ");
+			TablaHash<Registro> tablaHash = (TablaHash<Registro>) estructurasMap.get(TipoEstructura.TABLA_HASH);
+			System.out.println("Tamaño tabla hash: " + tablaHash.getTamaño() + " - Funcion hash: " + tablaHash.getFuncionHash().getNombre() + " - Cant. colisiones: " + tablaHash.getColisiones());
 		}
 		else{
 			System.out.println("\n** Debe cargar las estructuras de datos (Menu principal Opcion 2) **");
@@ -267,12 +302,16 @@ public class Principal {
 			mostrarTituloSeparador("REPRESENTACION DE ARBOL BINARIO DE BUSQUEDA");
 			ArbolBinarioDeBusqueda<Registro> abb = (ArbolBinarioDeBusqueda<Registro>) estructurasMap
 					.get(TipoEstructura.ABB);
-			abb.imprimirPorNiveles();
-			System.out.println();
+			String abbFullPath = pathDirectorio + File.separator + "abb.txt";
+			//grabarTexto(abbFullPath,abb.imprimirArbol());
+			System.out.println("Se grabò exitosamente, el path del archivo es: " + abbFullPath);
+			
 			mostrarTituloSeparador("REPRESENTACION DE ARBOL AVL");
 			ArbolBinarioDeBusqueda<Registro> avl = (ArbolBinarioDeBusqueda<Registro>) estructurasMap
 					.get(TipoEstructura.AAVL);
-			GraficadorArbol.printNode(avl.getNodoRaiz());
+			String avlFullPath = pathDirectorio + File.separator  + "avl.txt";
+			//grabarTexto(avlFullPath, avl.imprimirArbol());
+			System.out.println("Se grabò exitosamente, el path del archivo es: " + avlFullPath);
 		}
 		else{
 			System.out.println("\n** Debe cargar las estructuras de datos (Menu principal Opcion 2) **");
@@ -284,5 +323,13 @@ public class Principal {
 		separador();
 		System.out.println(titulo);
 		separador();
+	}
+	
+	public static void grabarTexto(String fullPathArchivo, String contenido) {
+		 try {
+			Files.write(Paths.get(fullPathArchivo), contenido.getBytes());
+		} catch (IOException e) {
+			System.err.println("Ocurrio un error tratando de grabar archivo " + fullPathArchivo);
+		}
 	}
 }
