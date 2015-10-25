@@ -10,18 +10,20 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.Set;
 
 import org.ues21.taed2.estructura.ArbolAVL;
 import org.ues21.taed2.estructura.ArbolBinarioDeBusqueda;
 import org.ues21.taed2.estructura.IEstructuraDeDatos;
 import org.ues21.taed2.estructura.IEstructuraDeDatos.Metricas;
 import org.ues21.taed2.estructura.IEstructuraDeDatos.TipoEstructura;
+import org.ues21.taed2.estructura.ListaDobleEnlazada;
+import org.ues21.taed2.estructura.TablaHash;
 import org.ues21.taed2.estructura.hash.FuncionHash;
 import org.ues21.taed2.estructura.hash.FuncionHashModulo;
 import org.ues21.taed2.estructura.hash.FuncionHashMultiplicacion;
-import org.ues21.taed2.estructura.ListaDobleEnlazada;
-import org.ues21.taed2.estructura.TablaHash;
 import org.ues21.taed2.principal.GestorCSV.Registro;
 
 /**
@@ -96,8 +98,8 @@ public class Principal {
 	 * Inicializa las funciones hash posibles de ser seleccionadas y asignadas a una tabla hash.
 	 */
 	private static void inicializarFuncionesHash() {
-		funcionesHashMap.put("A", new FuncionHashModulo<>());
-		funcionesHashMap.put("B", new FuncionHashMultiplicacion<>());
+		funcionesHashMap.put("A", new FuncionHashModulo<Registro>());
+		funcionesHashMap.put("B", new FuncionHashMultiplicacion<Registro>());
 	}
 	
 	/**
@@ -195,8 +197,11 @@ public class Principal {
 			inicializarEstructuras(tamañoTablaHash, funcionHash);
 			inicializarMetricas();
 
-			estructurasMap.forEach((k, v) -> mapaMetricas.get(v.getTipoEstructura())
-					.setTiempoInsercion(GestorCSV.cargar(v, fullPathArchivo)));
+			Set<Entry<TipoEstructura,IEstructuraDeDatos<Registro>>> entrySet = estructurasMap.entrySet();
+			for (Entry<TipoEstructura, IEstructuraDeDatos<Registro>> entry : entrySet) {
+				IEstructuraDeDatos<Registro> estructuraDatos = entry.getValue();
+				mapaMetricas.get(estructuraDatos.getTipoEstructura()).setTiempoInsercion(GestorCSV.cargar(estructuraDatos, fullPathArchivo));
+			}
 
 			estructurasCargadas = true;
 		}else{
@@ -259,8 +264,12 @@ public class Principal {
 			String fullPathArchivo = pathDirectorio + File.separator + CONSULTA_CSV;
 			System.out.println();
 			mostrarTituloSeparador("CONSULTA AUTOMATICA - archivo: " + fullPathArchivo);
-			estructurasMap.forEach((k, v) -> mapaMetricas.get(v.getTipoEstructura())
-					.setTiempoConsulta(GestorCSV.consultar(v, fullPathArchivo)));
+			
+			Set<Entry<TipoEstructura,IEstructuraDeDatos<Registro>>> entrySet = estructurasMap.entrySet();
+			for (Entry<TipoEstructura, IEstructuraDeDatos<Registro>> entry : entrySet) {
+				IEstructuraDeDatos<Registro> estructuraDatos = entry.getValue();
+				mapaMetricas.get(estructuraDatos.getTipoEstructura()).setTiempoConsulta(GestorCSV.consultar(estructuraDatos, fullPathArchivo));
+			}
 		}
 		else{
 			System.out.println("\n** Debe cargar las estructuras de datos (Menu principal Opcion 2) **");
