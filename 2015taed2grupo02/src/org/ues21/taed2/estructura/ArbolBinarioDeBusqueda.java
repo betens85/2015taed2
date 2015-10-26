@@ -325,38 +325,6 @@ public class ArbolBinarioDeBusqueda<T extends Comparable<T> & Codeable> implemen
         //Chequea si el nodo buscado esta en el subarbol derecho
         return obtenerAlturaDeNodo(nodo.getDerecho(), nodoBuscado, altura + 1);
     }
-	
-	public String imprimirArbol() {
-	    int alturaArbol = calcularAlturaDeArbol();
-	    int anchoTotal = alturaArbol * 2 * 2 * 5 ;
-		StringBuilder [] niveles = new StringBuilder[alturaArbol];
-		for(int i = 0; i < alturaArbol; i++) {
-			niveles[i] = new StringBuilder();
-			for( int j = 0; j < anchoTotal; j++) {
-				niveles[i].append(BLANCO);
-			}
-		}
-		int posicionRaiz = (anchoTotal - 5) / 2;
-		printArbol(nodoRaiz, posicionRaiz, niveles, 0);
-		
-		StringBuilder resultado = new StringBuilder();
-		
-		for (StringBuilder stringBuilder : niveles) {
-			resultado.append(stringBuilder.toString());
-			resultado.append("\n");
-		}
-		
-		return resultado.toString();
-	}
-
-	private void printArbol(NodoArbol<T> nodo, int posicion, StringBuilder[] niveles, int nivelNodo) {
-		String codigo = String.valueOf((nodo == null) ? "     " : nodo.getDatos().getCodigo());
-		System.out.println("nivel nodo= " + nivelNodo +" 1par = " + posicion + "   2dopar= " + (posicion + 5) + " 3erpar=  " + codigo.length() + " valorcodigo: " + codigo);
-		niveles[nivelNodo].replace(posicion, (posicion + 5), codigo);
-
-		printArbol((nodo==null) ? null : nodo.getIzquierdo(), (posicion - 5 - 1) <= 0 ? 0 : posicion - 5 - 1, niveles, nivelNodo + 1);
-		printArbol((nodo==null) ? null : nodo.getDerecho(), (posicion - 5 - 1) <= 0 ? 0 : posicion + 5 + 1, niveles, nivelNodo + 1);
-	}
 }
 
 

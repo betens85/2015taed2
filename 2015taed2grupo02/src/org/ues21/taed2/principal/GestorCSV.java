@@ -23,22 +23,27 @@ public final class GestorCSV {
 	 * Metodo que permite la carga de un archivo csv en una estructura de datos
 	 * 
 	 * @param estructuraDeDatos
-	 *            la estructura de datos a ser cargada
+	 *            la estructura de datos a ser cargada. Esta puede ser cualquier clase que implemente la {@link IEstructuraDeDatos}
 	 * @param fullPathArchivo
 	 *            el path completo al archivo que sera cargado
 	 * @return el tiempo en milisegundos de toda la carga
 	 */
 	public static Long cargar(IEstructuraDeDatos<Registro> estructuraDeDatos, String fullPathArchivo) {
-		Long tiempoTotalCarga = null;
-		Long tiempoInicio = System.currentTimeMillis();
+		Long tiempoTotalInsercion = null;
+		Long tiempoInicio = null; 
+		// se carga archivo de disco
 		Path file = Paths.get(fullPathArchivo);
 		Scanner scanner = null;
 		try {
 			scanner = new Scanner(file);
 			String[] campos;
+			tiempoInicio = System.currentTimeMillis();
+			// se leer archivo cargado de disco linea a linea
 			while (scanner.hasNextLine()) {
 				campos = scanner.nextLine().split(",");
-				estructuraDeDatos.insertar(new Registro(new Integer(campos[0]), campos[1]));
+				Registro registroAInsertar = new Registro(new Integer(campos[0]), campos[1]);
+				//se inserta un registro en la ED
+				estructuraDeDatos.insertar(registroAInsertar);
 			}
 			System.out.println("\t" + estructuraDeDatos.getTipoEstructura() + " =====> carga exitosa (" + estructuraDeDatos.getCantidadNodos() +" registros)");
 		}
@@ -51,10 +56,11 @@ public final class GestorCSV {
 			if (scanner != null) {
 				scanner.close();
 			}
-
-			tiempoTotalCarga = System.currentTimeMillis() - tiempoInicio;
+			// se toma tiempo total de insercion
+			tiempoTotalInsercion = System.currentTimeMillis() - tiempoInicio;
 		}
-		return tiempoTotalCarga;
+		
+		return tiempoTotalInsercion;
 	}
 
 	/**
@@ -62,7 +68,7 @@ public final class GestorCSV {
 	 * estructura de datos
 	 * 
 	 * @param estructuraDeDatos
-	 *            la estructura de datos a ser consultada
+	 *            la estructura de datos a ser consultada. Esta puede ser cualquier clase que implemente la {@link IEstructuraDeDatos}
 	 * @param fullPathArchivo
 	 *            el path completo al archivo a partir del cual se generaran
 	 *            consultas
@@ -70,26 +76,33 @@ public final class GestorCSV {
 	 */
 	public static Long consultar(IEstructuraDeDatos<Registro> estructuraDeDatos, String fullPathArchivo) {
 		Long tiempoTotalConsulta = null;
-		Long tiempoInicio = System.currentTimeMillis();
+		Long tiempoInicio = null;
+		//se carga archivo de disco
 		Path file = Paths.get(fullPathArchivo);
 		Scanner scanner = null;
 		try {
 			scanner = new Scanner(file);
 			String[] campos;
 			StringBuilder sbResultados = new StringBuilder();
+			// se toma tiempo de inicio
+			tiempoInicio = System.currentTimeMillis();
 			
+			// se lee archivo cargado de disco, linea a linea
 			while (scanner.hasNextLine()) {
 				campos = scanner.nextLine().split(",");
-				Registro filtro = new Registro(new Integer(campos[0]), null);
-				Registro resultado = estructuraDeDatos.buscar(filtro);
+				// se crea un filtro de busqueda, usando un objeto como wrapper
+				Registro filtroDeBusqueda = new Registro(new Integer(campos[0]), null);
+				//se busca dentro de la estructura de datos
+				Registro resultado = estructuraDeDatos.buscar(filtroDeBusqueda);
 				if (resultado != null) {
 					sbResultados.append("\n\tCodigo: " + resultado.getCodigo() + " - Resultado: " + resultado.getNombreCompleto());
 				}
 				else{
-					sbResultados.append("\n\tCodigo: " + filtro.getCodigo() + " - Resultado: NO ENCONTRADO");
+					sbResultados.append("\n\tCodigo: " + filtroDeBusqueda.getCodigo() + " - Resultado: NO ENCONTRADO");
 				}
 			}
 			
+			//se muestran los resultados por consola
 			if (sbResultados.length() > 0) {
 				System.out.println();
 				System.out.println(estructuraDeDatos.getTipoEstructura());
@@ -101,7 +114,7 @@ public final class GestorCSV {
 			if (scanner != null) {
 				scanner.close();
 			}
-
+			// se toma tiempo total de consulta
 			tiempoTotalConsulta = System.currentTimeMillis() - tiempoInicio;
 		}
 		return tiempoTotalConsulta;

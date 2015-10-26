@@ -1,12 +1,6 @@
-/**
- * 
- */
 package org.ues21.taed2.principal;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Map;
@@ -34,21 +28,22 @@ import org.ues21.taed2.principal.GestorCSV.Registro;
  */
 public class Principal {
 
-	private static final String CONSULTA_CSV = "consulta.csv";
-	private static final String CARGA_CSV = "datos.csv";
-	private static Map<TipoEstructura, Metricas> mapaMetricas = new HashMap<>();
-	private static Map<TipoEstructura, IEstructuraDeDatos<Registro>> estructurasMap = new HashMap<>();
-	private static Map<String, FuncionHash<Registro>> funcionesHashMap = new HashMap<>();
-	private static Map<String, TipoEstructura> tiposEstructurasMap = new HashMap<>();
-	private static String pathDirectorio;
-	private static boolean pathDirectorioCargado;
-	private static boolean estructurasCargadas;
+	private static final String CONSULTA_CSV = "consulta.csv";// nombre por default de archivo de consulta
+	private static final String CARGA_CSV = "datos.csv"; // nombre por default de archivo de carga
+	private static Map<TipoEstructura, Metricas> mapaMetricas = new HashMap<>(); // mapa para guardar metricas para cada estructura de datos
+	private static Map<TipoEstructura, IEstructuraDeDatos<Registro>> mapaEstructuraDatos = new HashMap<>(); // mapa estructuras de datos a ser cargadas y consultadas
+	private static Map<String, FuncionHash<Registro>> mapaFuncionesHash = new HashMap<>(); //mapa de funciones hash a ser elegidas en ejecucion para una tabla hash
+	private static Map<String, TipoEstructura> mapaTipoEstructura = new HashMap<>(); // mapa tipo estructura
+	private static String pathDirectorio;//guarda el path de directorio
+	private static boolean pathDirectorioCargado;// flag para saber si se cargo o no el directorio
+	private static boolean estructurasCargadas;// flag para saber si se cargaron o no las estructuras de datos
 
 	/**
 	 * Metodo principal que inicio a la ejecucion del programa
 	 * @param args argumentos opcionales
 	 */
 	public static void main(String[] args) {
+		// precarga de mapas de datos
 		inicializarFuncionesHash();
 		inicializarTiposEstructuras();
 		inicializarMetricas();
@@ -92,29 +87,29 @@ public class Principal {
 	}
 
 	private static void inicializarEstructuras(int tamañoTablaHash, FuncionHash<Registro> funcionHash) {
-		estructurasMap.clear();
-		estructurasMap.put(TipoEstructura.LISTA_DOB_ENLAZADA, new ListaDobleEnlazada<Registro>());
-		estructurasMap.put(TipoEstructura.TABLA_HASH, new TablaHash<Registro>(tamañoTablaHash, funcionHash));
-		estructurasMap.put(TipoEstructura.ABB, new ArbolBinarioDeBusqueda<Registro>());
-		estructurasMap.put(TipoEstructura.AAVL, new ArbolAVL<Registro>());
+		mapaEstructuraDatos.clear();
+		mapaEstructuraDatos.put(TipoEstructura.LISTA_DOB_ENLAZADA, new ListaDobleEnlazada<Registro>());
+		mapaEstructuraDatos.put(TipoEstructura.TABLA_HASH, new TablaHash<Registro>(tamañoTablaHash, funcionHash));
+		mapaEstructuraDatos.put(TipoEstructura.ABB, new ArbolBinarioDeBusqueda<Registro>());
+		mapaEstructuraDatos.put(TipoEstructura.AAVL, new ArbolAVL<Registro>());
 	}
 	
 	/**
 	 * Inicializa las funciones hash posibles de ser seleccionadas y asignadas a una tabla hash.
 	 */
 	private static void inicializarFuncionesHash() {
-		funcionesHashMap.put("A", new FuncionHashModulo<Registro>());
-		funcionesHashMap.put("B", new FuncionHashMultiplicacion<Registro>());
+		mapaFuncionesHash.put("A", new FuncionHashModulo<Registro>());
+		mapaFuncionesHash.put("B", new FuncionHashMultiplicacion<Registro>());
 	}
 	
 	/**
 	 * Inicializa los tipos de estructuras a ser seleccionadas y utilizadas para busqueda.
 	 */
 	private static void inicializarTiposEstructuras() {
-		tiposEstructurasMap.put("A", TipoEstructura.LISTA_DOB_ENLAZADA);
-		tiposEstructurasMap.put("B", TipoEstructura.TABLA_HASH);
-		tiposEstructurasMap.put("C", TipoEstructura.ABB);
-		tiposEstructurasMap.put("D", TipoEstructura.AAVL);
+		mapaTipoEstructura.put("A", TipoEstructura.LISTA_DOB_ENLAZADA);
+		mapaTipoEstructura.put("B", TipoEstructura.TABLA_HASH);
+		mapaTipoEstructura.put("C", TipoEstructura.ABB);
+		mapaTipoEstructura.put("D", TipoEstructura.AAVL);
 	}
 	
 	private static void mostrarMenuPrincipal() {
@@ -130,7 +125,6 @@ public class Principal {
 		System.out.println("| 3. Buscar Valor en estructuras                       |");
 		System.out.println("| 4. Consulta automatica de CSV                        |");
 		System.out.println("| 5. Mostrar Reporte                                   |");
-		System.out.println("| 6. Mostrar Arboles                                   |");
 		System.out.println("| 9. SALIR                                             |");
 		System.out.print("\nINGRESE UNA OPCION: ");
 		System.out.println();
@@ -153,9 +147,6 @@ public class Principal {
 		case 5:
 			menuPrincipalOpcion5();
 			break;
-		case 6:
-			menuPrincipalOpcion6();
-			break;
 
 		default:
 			break;
@@ -174,45 +165,56 @@ public class Principal {
 	private static void menuPrincipalOpcion2(Scanner scanner) {
 		if (pathDirectorioCargado) {
 			String fullPathArchivo = pathDirectorio + File.separator + CARGA_CSV;
-			mostrarTituloSeparador("CARGA DE DATOS  - Archivo: " + fullPathArchivo);
-			System.out.print("\n- Ingrese el tamaño de tabla hash: \n");
-			Integer tamañoTablaHash = null;
-			do{
-				if (!scanner.hasNextInt()) {
-					System.err.println("* El tamaño de tabla hash debe ser numerico.");
-					return;
+			if(new File(fullPathArchivo).exists()){//se valida si existe archivo
+			
+				mostrarTituloSeparador("CARGA DE DATOS  - Archivo: " + fullPathArchivo);
+				System.out.print("\n- Ingrese el tamaño de tabla hash: \n");
+				Integer tamañoTablaHash = null;
+				do{
+					if (!scanner.hasNextInt()) {
+						System.err.println("* El tamaño de tabla hash debe ser numerico.");
+						return;
+					}
+					tamañoTablaHash = scanner.nextInt();
+				}while(tamañoTablaHash == null);
+				
+				System.out.println("- Seleccione una funcion hash a utilizar");
+				System.out.println("\n\t A - Funcion Modulo");
+				System.out.println("\t B - Funcion Multiplicacion");
+				System.out.print("\nSeleccione una funcion hash: \n");
+				
+				String seleccionDeFuncionHash = null;
+				do{
+					seleccionDeFuncionHash = scanner.nextLine();
+				}while(seleccionDeFuncionHash.trim().isEmpty());
+				
+				FuncionHash<Registro> funcionHashElegida = mapaFuncionesHash.get(seleccionDeFuncionHash);	
+				
+				if (funcionHashElegida == null) {
+					System.err.println("\nEl tipo de funcion hash seleccionada no existe (" + seleccionDeFuncionHash + ")\n");
+					System.out.println(" ");
+					return ;
 				}
-				tamañoTablaHash = scanner.nextInt();
-			}while(tamañoTablaHash == null);
-			
-			System.out.println("- Seleccione una funcion hash a utilizar");
-			System.out.println("\n\t A - Funcion Modulo");
-			System.out.println("\t B - Funcion Multiplicacion");
-			System.out.print("\nSeleccione una funcion hash: \n");
-			
-			String seleccionFuncionHash = null;
-			do{
-				seleccionFuncionHash = scanner.nextLine();
-			}while(seleccionFuncionHash.trim().isEmpty());
-			
-			FuncionHash<Registro> funcionHash = funcionesHashMap.get(seleccionFuncionHash);	
-			
-			if (funcionHash == null) {
-				System.err.println("\nEl tipo de funcion hash seleccionada no existe (" + seleccionFuncionHash + ")\n");
-				System.out.println(" ");
-				return ;
+				
+				inicializarEstructuras(tamañoTablaHash, funcionHashElegida);
+				inicializarMetricas();
+	
+				// se obtiene un set de entradas clave/valor de las ED a ser cargadas (mapa de ED vacias)
+				Set<Entry<TipoEstructura,IEstructuraDeDatos<Registro>>> entradasED = mapaEstructuraDatos.entrySet();
+				
+				for (Entry<TipoEstructura, IEstructuraDeDatos<Registro>> entrada : entradasED) {
+					IEstructuraDeDatos<Registro> estructuraDatos = entrada.getValue(); // obtenemos la estructura de datos
+					Metricas metricas = mapaMetricas.get(estructuraDatos.getTipoEstructura()); // obtenemos metricas para tipo de ED
+					Long tiempoCargaEstructuraDatos = GestorCSV.cargar(estructuraDatos, fullPathArchivo); // se carga el archivo en la ED y se obtiene el tiempo total
+					metricas.setTiempoInsercion(tiempoCargaEstructuraDatos); // se guarda la metrica tiempo de insercion para el tipo de ED
+				}
+	
+				estructurasCargadas = true; // se cargaron las ED
 			}
-			
-			inicializarEstructuras(tamañoTablaHash, funcionHash);
-			inicializarMetricas();
-
-			Set<Entry<TipoEstructura,IEstructuraDeDatos<Registro>>> entrySet = estructurasMap.entrySet();
-			for (Entry<TipoEstructura, IEstructuraDeDatos<Registro>> entry : entrySet) {
-				IEstructuraDeDatos<Registro> estructuraDatos = entry.getValue();
-				mapaMetricas.get(estructuraDatos.getTipoEstructura()).setTiempoInsercion(GestorCSV.cargar(estructuraDatos, fullPathArchivo));
+			else
+			{
+				System.out.println("\n** El archivo '" + CARGA_CSV + "' no existe en el directorio '" + pathDirectorio +"' **");
 			}
-
-			estructurasCargadas = true;
 		}else{
 			System.out.println("\n** Debe cargar el path del directorio (Menu principal Opcion 1) **");
 		}
@@ -231,13 +233,15 @@ public class Principal {
 				seleccionEstructuraDatos = scanner.nextLine();
 			}while(seleccionEstructuraDatos.trim().isEmpty());
 			
-			TipoEstructura tipoEstructura = tiposEstructurasMap.get(seleccionEstructuraDatos);
+			//se obtiene tipo ED, de acuerdo a opcion ingresada por consola
+			TipoEstructura tipoEstructura = mapaTipoEstructura.get(seleccionEstructuraDatos);
 			
-			if ( tipoEstructura == null) {
+			if (tipoEstructura == null) {
 				System.err.println("\nEl tipo de estructura seleccionado es incorrecto (" + seleccionEstructuraDatos + ")\n");
 				return ;
 			}
-			IEstructuraDeDatos<Registro> estructuraDeDatos = estructurasMap.get(tipoEstructura);
+			//una vez que tenemos el tipo de ED, se obtiene la ED para buscar dentro de ella
+			IEstructuraDeDatos<Registro> estructuraDeDatos = mapaEstructuraDatos.get(tipoEstructura);
 			
 			System.out.println();
 			System.out.print("Ingrese el codigo de busqueda: ");
@@ -254,7 +258,9 @@ public class Principal {
 			} while (codigoBuscado == null);
 			
 			Long tiempoInicio = System.currentTimeMillis();
-			Registro registroResultado = estructuraDeDatos.buscar(new Registro(codigoBuscado, ""));
+			
+			// se obtiene el resultado pasandole al metodo 'buscar' de la ED el codigo ingresado por consola
+			Registro registroResultado = estructuraDeDatos.buscar(new Registro(codigoBuscado, ""));			
 			Long tiempoTotalBusqueda = System.currentTimeMillis() - tiempoInicio;
 			
 			System.out.println();
@@ -274,10 +280,15 @@ public class Principal {
 			System.out.println();
 			mostrarTituloSeparador("CONSULTA AUTOMATICA - archivo: " + fullPathArchivo);
 			
-			Set<Entry<TipoEstructura,IEstructuraDeDatos<Registro>>> entrySet = estructurasMap.entrySet();
-			for (Entry<TipoEstructura, IEstructuraDeDatos<Registro>> entry : entrySet) {
-				IEstructuraDeDatos<Registro> estructuraDatos = entry.getValue();
-				mapaMetricas.get(estructuraDatos.getTipoEstructura()).setTiempoConsulta(GestorCSV.consultar(estructuraDatos, fullPathArchivo));
+			//se obtiene un set de entradas clave/valor ('tipo ED' / ED)
+			Set<Entry<TipoEstructura,IEstructuraDeDatos<Registro>>> entradasED = mapaEstructuraDatos.entrySet();
+			
+			for (Entry<TipoEstructura, IEstructuraDeDatos<Registro>> entrada : entradasED) {
+				IEstructuraDeDatos<Registro> estructuraDatos = entrada.getValue();// se obtiene la ED sobre la que se realizaran las consultas
+				TipoEstructura tipoEstructuraActual = estructuraDatos.getTipoEstructura();// se obtiene el tipo de ED 
+				Metricas metricasParaTipoED = mapaMetricas.get(tipoEstructuraActual); // metricas a ser completadas para el tipo de ED actual
+				Long tiempoConsultaPorED = GestorCSV.consultar(estructuraDatos, fullPathArchivo);// se realizan las consultas sobre la ED
+				metricasParaTipoED.setTiempoConsulta(tiempoConsultaPorED);// se graba la metrica de tiempo de consulta para el tipo de ED actual
 			}
 		}
 		else{
@@ -293,7 +304,7 @@ public class Principal {
 	private static void menuPrincipalOpcion5() {
 		if (estructurasCargadas) {
 			System.out.println();
-			mostrarTituloSeparador("REPORTE DE METRICAS DE ESTRUCTURA (tiempo en milisegundos)");
+			mostrarTituloSeparador("REPORTE DE METRICAS DE ESTRUCTURA (tiempo en milisegundos) - " + mapaEstructuraDatos.get(TipoEstructura.AAVL).getCantidadNodos() + " registros" );
 			System.out.println();
 			System.out.println("Estructura                       Tiempo Insercion               Tiempo Consulta\n");
 			System.out.println(TipoEstructura.LISTA_DOB_ENLAZADA + "\t\t\t"
@@ -308,48 +319,18 @@ public class Principal {
 					TipoEstructura.AAVL + "\t\t\t\t" + mapaMetricas.get(TipoEstructura.AAVL).getTiempoInsercion()
 							+ "\t\t\t\t" + mapaMetricas.get(TipoEstructura.AAVL).getTiempoConsulta());
 			System.out.println(" ");
-			TablaHash<Registro> tablaHash = (TablaHash<Registro>) estructurasMap.get(TipoEstructura.TABLA_HASH);
-			System.out.println("Tamaño tabla hash: " + tablaHash.getTamaño() + " - Funcion hash: " + tablaHash.getFuncionHash().getNombre() + " - Cant. colisiones: " + tablaHash.getColisiones());
+			TablaHash<Registro> tablaHash = (TablaHash<Registro>) mapaEstructuraDatos.get(TipoEstructura.TABLA_HASH);
+			System.out.println("*  Tamaño tabla hash: " + tablaHash.getTamaño() + " - Funcion hash: " + tablaHash.getFuncionHash().getNombre() + " - Cant. colisiones: " + tablaHash.getColisiones());
 		}
 		else{
 			System.out.println("\n** Debe cargar las estructuras de datos (Menu principal Opcion 2) **");
 		}
 	}
 
-	private static void menuPrincipalOpcion6() {
-		if (estructurasCargadas) {
-			System.out.println();
-			mostrarTituloSeparador("REPRESENTACION DE ARBOL BINARIO DE BUSQUEDA");
-			ArbolBinarioDeBusqueda<Registro> abb = (ArbolBinarioDeBusqueda<Registro>) estructurasMap
-					.get(TipoEstructura.ABB);
-			String abbFullPath = pathDirectorio + File.separator + "abb.txt";
-			//grabarTexto(abbFullPath,abb.imprimirArbol());
-			System.out.println("Se grabò exitosamente, el path del archivo es: " + abbFullPath);
-			
-			mostrarTituloSeparador("REPRESENTACION DE ARBOL AVL");
-			ArbolBinarioDeBusqueda<Registro> avl = (ArbolBinarioDeBusqueda<Registro>) estructurasMap
-					.get(TipoEstructura.AAVL);
-			String avlFullPath = pathDirectorio + File.separator  + "avl.txt";
-			//grabarTexto(avlFullPath, avl.imprimirArbol());
-			System.out.println("Se grabò exitosamente, el path del archivo es: " + avlFullPath);
-		}
-		else{
-			System.out.println("\n** Debe cargar las estructuras de datos (Menu principal Opcion 2) **");
-		}
-	}
-	
 	private static void mostrarTituloSeparador(String titulo) {
 		System.out.println();
 		separador();
 		System.out.println(titulo);
 		separador();
-	}
-	
-	public static void grabarTexto(String fullPathArchivo, String contenido) {
-		 try {
-			Files.write(Paths.get(fullPathArchivo), contenido.getBytes());
-		} catch (IOException e) {
-			System.err.println("Ocurrio un error tratando de grabar archivo " + fullPathArchivo);
-		}
 	}
 }

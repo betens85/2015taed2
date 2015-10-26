@@ -23,5 +23,4 @@ public class FuncionHashMultiplicacion<T extends Comparable<T> & Codeable> imple
 	public String getNombre() {
 		return "Multiplicacion";
 	}
-
 }

@@ -23,5 +23,4 @@ public class FuncionHashModulo<T extends Comparable<T> & Codeable> implements Fu
 	public String getNombre() {
 		return "Modulo";
 	}
-
 }
