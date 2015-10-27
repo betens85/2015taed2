@@ -15,8 +15,15 @@ public class FuncionHashMultiplicacion<T extends Comparable<T> & Codeable> imple
 
 	@Override
 	public int calcularHash(TablaHash<T> tablaHash, T datos) {
-		Integer k = datos.getCodigo();
-		return k % tablaHash.getTamaño();
+		
+		Double aux = ((1 + Math.sqrt(5)/ 2)) * datos.getCodigo();
+		String auxStr = String.valueOf(aux);
+		
+		Double parteDecimal = new Double(auxStr.split("\\.")[1]);
+		
+		String parteEntera = String.valueOf(tablaHash.getTamaño() * parteDecimal).split("\\1.")[0];
+		
+		return new Integer(parteEntera);
 	}
 	
 	@Override
