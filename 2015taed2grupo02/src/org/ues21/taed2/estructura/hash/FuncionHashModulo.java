@@ -15,8 +15,12 @@ public class FuncionHashModulo<T extends Comparable<T> & Codeable> implements Fu
 
 	@Override
 	public int calcularHash(TablaHash<T> tablaHash, T datos) {
-		Integer k = datos.getCodigo();
-		return k % tablaHash.getTamaño();
+		// paso 1: se obtiene el codigo y el tamaño de la tabla hash
+		int k = datos.getCodigo();
+		int m = tablaHash.getTamaño();
+		
+		//se retorna el modulo de la division entre el numero y el tamaño de la tabla hash
+		return k % m;
 	}
 	
 	@Override

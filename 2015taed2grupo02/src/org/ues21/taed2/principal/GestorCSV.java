@@ -153,6 +153,11 @@ public final class GestorCSV {
 		}
 	}
 	
+	/**
+	 * Interface que define que quien la implementa debe tener un codigo.
+	 * @author grupo02
+	 *
+	 */
 	public static interface Codeable {
 		Integer getCodigo();
 	}

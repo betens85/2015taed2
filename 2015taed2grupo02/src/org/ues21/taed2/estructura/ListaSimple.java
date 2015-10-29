@@ -18,16 +18,17 @@ public class ListaSimple<T extends Comparable<T> & Codeable> implements IEstruct
 	public T buscar(T datos) {
 		NodoLS<T> resultado = null;
 		
-		if (!estaVacia()) {
-			NodoLS<T> nodoAux = frente;
+		if (!estaVacia()) { //
+			NodoLS<T> nodoAux = frente; // se busca desde el frente hacia adelante
 			while(nodoAux != null && resultado == null) {
-				if(nodoAux.getDatos().compareTo(datos) == 0) {
+				if(nodoAux.getDatos().compareTo(datos) == 0) {// si son iguales es el nodo buscado
 					resultado = nodoAux;
 				}
 				nodoAux = nodoAux.getSiguiente();
 			}
 		}
 		
+		//si resultado no es null se devuelves sus datos sino null
 		return resultado != null ? resultado.getDatos() : null;
 	}
 
@@ -37,6 +38,10 @@ public class ListaSimple<T extends Comparable<T> & Codeable> implements IEstruct
 		this.cantidadNodos++;
 	}
 
+	/**
+	 * Metodo que inserta por el nodo frente de la lista
+	 * @param datos los datos que formaran parte del nodo a insertar.
+	 */
 	private void insertarEnFrente(T datos) {
 		NodoLS<T> nodo = new NodoLS<>(datos);
 		nodo.setSiguiente(this.frente);

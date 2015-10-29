@@ -16,14 +16,31 @@ public class FuncionHashMultiplicacion<T extends Comparable<T> & Codeable> imple
 	@Override
 	public int calcularHash(TablaHash<T> tablaHash, T datos) {
 		
-		Double aux = ((1 + Math.sqrt(5)/ 2)) * datos.getCodigo();
-		String auxStr = String.valueOf(aux);
+		/*
+		 * * Funcion Multiplicacion (apuntes de clase)*
+		 * 
+		 * 1 - Primero se multiplica el numero 'x'  por una constante R comprendida entre 0 y 1, donde x es el dato que se quiere insertar y R
+		 *     en este caso es la inversa de la 'razon aurea'. --> R * x
+		 * 
+		 * 2 - Separar la parte decimal del numero obtenido fraccionario obtenido en el primer paso --> d= (R * x) - parteEntera(R * x)
+		 * 
+		 * 3 - Obtener la parte entera de la multiplicacion entre el tamaño de la tabla hash y el numero decimal obtenido en el paso 2.
+		 *     h(x) = parteEntera(m * d)
+		 */
 		
-		Double parteDecimal = new Double(auxStr.split("\\.")[1]);
+		//paso 1
+		double razonAurea = (1 + Math.sqrt(5)) / 2;
+		double inversaRazonAurea = 1 / razonAurea;		
+		double nroPaso1 = inversaRazonAurea * datos.getCodigo();
 		
-		String parteEntera = String.valueOf(tablaHash.getTamaño() * parteDecimal).split("\\1.")[0];
+		//paso 2
+		double parteDecimal= nroPaso1 - Math.floor(nroPaso1);
 		
-		return new Integer(parteEntera);
+		//paso 3
+		int parteEntera = (int) (tablaHash.getTamaño() * parteDecimal);		
+		
+		//retornamos la posicion
+		return parteEntera;
 	}
 	
 	@Override
